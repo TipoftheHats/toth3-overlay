@@ -1,0 +1,11 @@
+{
+  "name": "toth3-overlay",
+  "version": "0.0.1",
+  "nodecgDependency": "~0.6.0",
+  "homepage": "http://tipofthehats.org/",
+  "authors": [
+    "Alex Van Camp <email@alexvan.camp>"
+  ],
+  "description": "The main broadcast assets for Tip of the Hats 2015.",
+  "license": "MIT"
+}

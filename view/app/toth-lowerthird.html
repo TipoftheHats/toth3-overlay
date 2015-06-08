@@ -1,0 +1,101 @@
+<dom-module id="toth-lowerthird">
+    <style>
+        :host {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            font-size: 42px;
+        }
+
+        #head {
+            display: flex;
+            height: 1.357em;
+            align-items: center;
+        }
+
+        #title {
+            display: block;
+            height: 100%;
+            font-family: "proxima-nova-condensed";
+            text-transform: uppercase;
+
+            padding: 0 0.429em;
+            font-size: 1.524em;
+            font-weight: 800;
+            line-height: 0.96em;
+            background-color: #D3C9C9;
+            overflow: hidden;
+        }
+
+        #logo {
+            display: block;
+            height: 64px;
+            align-self: flex-start;
+        }
+
+        #line {
+            height: 0.17em;
+            background-color: #F47425;
+            width: 100%;
+        }
+
+        #body {
+            max-height: 130px;
+            padding: 0.2em 0.5em;
+            color: #E4E4E4;
+            background-color: rgba(0,0,0,0.5);
+            box-sizing: border-box;
+        }
+    </style>
+
+    <template>
+        <div id="head">
+            <div id="title">Title Here</div>
+            <img id="logo" src="../img/logo.png">
+        </div>
+        <div id="line"></div>
+        <div id="body"></div>
+    </template>
+</dom-module>
+
+<script>
+    Polymer({
+        is: 'toth-lowerthird',
+        properties: {
+            title: {
+                type: String,
+                observer: 'titleChanged'
+            },
+            body: {
+                type: String,
+                observer: 'bodyChanged'
+            }
+        },
+        tagChanged: function(newValue) {
+
+        },
+        bodyChanged: function(newValue) {
+            var bodyEl = this.$.body;
+            bodyEl.innerHTML = newValue;
+            bodyEl.style.maxWidth = '';
+            var width = bodyEl.offsetWidth;
+            console.log('changed, offsetWidth:', width);
+            if (width >= 1200) {
+                var maxHeight = parseInt(window.getComputedStyle(bodyEl).maxHeight);
+                bodyEl.style.maxWidth = width / 2 + 'px';
+                console.log('width greater than 1200, setting maxWidth to:', width / 2);
+                console.log('bodyEl.scrollHeight: %d, maxHeight: %d', bodyEl.scrollHeight, maxHeight);
+                while (bodyEl.scrollHeight > maxHeight) {
+                    bodyEl.style.maxWidth = (parseInt(bodyEl.style.maxWidth)+1) + 'px';
+                }
+            }
+        },
+        attached: function() {
+            var self = this;
+            window.lowerthird = self;
+            setTimeout(function() {
+                self.body = 'Hello this is a pretty dang long body string.'
+            }, 250);
+        }
+    });
+</script>

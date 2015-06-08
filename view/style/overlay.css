@@ -1,0 +1,30 @@
+body { margin: 0 }
+
+#container {
+    position: absolute;
+    width: 1920px;
+    height: 1080px;
+    font-family: "proxima-nova";
+}
+
+#lowerthird {
+    position: absolute;
+    bottom: 0;
+}
+
+#layout {
+    width: 100%;
+    height: 100%;
+}
+
+#donation {
+    position: absolute;
+    top: 25px;
+    left: 25px;
+}
+
+#lowerthird {
+    position: absolute;
+    top: 797px;
+    right: 88px;
+}

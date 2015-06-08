@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+	 viewBox="0 0 1920 1080" enable-background="new 0 0 1920 1080" xml:space="preserve">
+
+	<g id="Layout" opacity="0.5">
+        <g id="TF2">
+            <image overflow="visible" width="1920" height="1080" xlink:href="img/background.jpg"/>
+        </g>
+
+        <g id="Host" display="none">
+            <defs>
+                <rect id="SVGID_1_" width="320" height="743"/>
+            </defs>
+            <clipPath id="SVGID_2_" display="inline">
+                <use xlink:href="#SVGID_1_"  overflow="visible"/>
+            </clipPath>
+            <g display="inline" clip-path="url(#SVGID_2_)">
+                <image overflow="visible" width="1920" height="1080" id="Host_Cam_1_" xlink:href="img/7CFB3F1.jpg"  transform="matrix(0.688 0 0 0.688 -477.2724 0)"/>
+            </g>
+        </g>
+
+        <g id="Couch_1_">
+            <defs>
+                <rect id="SVGID_3_" x="500" y="970" width="806.9" height="110"/>
+            </defs>
+            <clipPath id="SVGID_4_">
+                <use xlink:href="#SVGID_3_"  overflow="visible"/>
+            </clipPath>
+            <g transform="matrix(1 0 0 1 0 0)" clip-path="url(#SVGID_4_)">
+                <image overflow="visible" width="1920" height="1080" id="Couch_2_" xlink:href="img/7CFB3F7.jpg"  transform="matrix(0.4203 0 0 0.419 500 888.7974)"/>
+            </g>
+        </g>
+
+        <g id="Gamers_1_">
+            <image overflow="visible" width="1920" height="1080" xlink:href="img/7CFB3F0.jpg"  transform="matrix(0.2604 0 0 0.2604 0 798.75)"/>
+        </g>
+    </g>
+
+</svg>

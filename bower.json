@@ -1,0 +1,8 @@
+{
+  "name": "toth3-overlay",
+  "dependencies": {
+    "gsap": "~1.16.1",
+    "jquery": "~2.1.4",
+    "Snap.svg": "~0.4.1"
+  }
+}

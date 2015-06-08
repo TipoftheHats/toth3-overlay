@@ -1,0 +1,58 @@
+<link rel="import" href="toth-hudplate.html">
+<link rel="import" href="elastic-behavior.html">
+
+<dom-module id="toth-donation">
+    <style>
+        :host {
+            display: flex;
+            height: 45px;
+            font-size: 32px;
+            align-items: center;
+        }
+
+        #tag {
+            display: block;
+            width: 0;
+            height: 100%;
+            padding-left: 0.375em;
+            padding-right: 0.375em;
+            line-height: 47px;
+            font-size: 1.250em;
+            font-weight: 600;
+            color: #E4E4E4;
+            background-color: rgba(0,0,0,0.5);
+        }
+    </style>
+
+    <template>
+        <div id="tag">
+            <span elastic></span>
+        </div>
+        <toth-hudplate id="body">
+            <span elastic></span>
+        </toth-hudplate>
+    </template>
+</dom-module>
+
+<script>
+    Polymer({
+        is: 'toth-donation',
+        properties: {
+            tag: {
+                type: String,
+                observer: 'tagChanged'
+            },
+            body: {
+                type: String,
+                observer: 'bodyChanged'
+            }
+        },
+        tagChanged: function(newValue) {
+            this.elasticize(this.$.tag.querySelector('span'), newValue);
+        },
+        bodyChanged: function(newValue) {
+            this.elasticize(this.$.body.querySelector('span'), newValue);
+        },
+        behaviors: [ElasticBehavior]
+    });
+</script>
