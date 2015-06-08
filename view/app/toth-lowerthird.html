@@ -11,6 +11,7 @@
             display: flex;
             height: 1.357em;
             align-items: center;
+            overflow: hidden;
         }
 
         #title {
@@ -24,19 +25,21 @@
             font-weight: 800;
             line-height: 0.96em;
             background-color: #D3C9C9;
-            overflow: hidden;
+            transform: translateY(100%);
         }
 
         #logo {
             display: block;
             height: 64px;
             align-self: flex-start;
+            transform: translateY(100%);
         }
 
         #line {
             height: 0.17em;
             background-color: #F47425;
-            width: 100%;
+            width: 0;
+            transform-origin: center;
         }
 
         #body {
@@ -45,6 +48,11 @@
             color: #E4E4E4;
             background-color: rgba(0,0,0,0.5);
             box-sizing: border-box;
+            transform: translateY(-100%);
+        }
+
+        #bodyContainer {
+            overflow: hidden;
         }
     </style>
 
@@ -54,7 +62,9 @@
             <img id="logo" src="../img/logo.png">
         </div>
         <div id="line"></div>
-        <div id="body"></div>
+        <div id="bodyContainer">
+            <div id="body"></div>
+        </div>
     </template>
 </dom-module>
 
@@ -70,6 +80,57 @@
                 type: String,
                 observer: 'bodyChanged'
             }
+        },
+        show: function() {
+            var line = this.$.line;
+            var logo = this.$.logo;
+            var title = this.$.title;
+            var body = this.$.body;
+
+            TweenLite.to(line, 0.8, {
+                width: '100%',
+                ease: Power3.easeInOut,
+                onUpdate: function() {
+                    var lineWidth = line.offsetWidth;
+
+                    if (!logo.showing && lineWidth >= logo.offsetWidth) {
+                        logo.showing = true;
+                        TweenLite.to(logo, 0.5, {y: '0%', ease: Power3.easeOut})
+                    }
+
+                    if (!title.showing && lineWidth >= title.offsetWidth) {
+                        title.showing = true;
+                        TweenLite.to(title, 0.5, {y: '0%', ease: Power3.easeOut})
+                    }
+
+                    if (!body.showing && lineWidth >= body.offsetWidth) {
+                        body.showing = true;
+                        TweenLite.to(body, 0.5, {y: '0%', ease: Power3.easeOut})
+                    }
+                }
+            })
+        },
+        hide: function() {
+            var line = this.$.line;
+            var logo = this.$.logo;
+            var title = this.$.title;
+            var body = this.$.body;
+
+            var tl = new TimelineLite();
+            tl.add('start');
+            tl.to(logo, 0.5, {y: '100%', ease: Power3.easeIn}, 'start');
+            tl.to(title, 0.5, {y: '100%', ease: Power3.easeIn}, 'start+=0.08');
+            tl.to(body, 0.5, {y: '-100%', ease: Power3.easeIn}, 'start+=0.16');
+            tl.to(line, 0.06, {scaleY: '0', ease: Linear.easeNone});
+            tl.set(body, {clearProps: 'transform'});
+            tl.set([title, logo, line], {
+                clearProps: 'all',
+                onComplete: function() {
+                    body.showing = false;
+                    title.showing = false;
+                    logo.showing = false;
+                }
+            });
         },
         tagChanged: function(newValue) {
 
