@@ -26,6 +26,7 @@
             line-height: 0.96em;
             background-color: #D3C9C9;
             transform: translateY(100%);
+            transform-origin: right;
         }
 
         #logo {
@@ -102,7 +103,7 @@
                 var body = this.$.body;
 
                 TweenLite.to(line, 0.8, {
-                    width: '100%',
+                    width: Math.max(title.getBoundingClientRect().width, body.getBoundingClientRect().width),
                     ease: Power3.easeInOut,
                     onUpdate: function() {
                         var lineWidth = line.offsetWidth;
@@ -112,7 +113,7 @@
                             TweenLite.to(logo, 0.5, {y: '0%', ease: Power3.easeOut})
                         }
 
-                        if (!title.showing && lineWidth >= title.offsetWidth) {
+                        if (!title.showing && lineWidth >= title.getBoundingClientRect().width) {
                             title.showing = true;
                             TweenLite.to(title, 0.5, {y: '0%', ease: Power3.easeOut})
                         }
@@ -178,6 +179,16 @@
                     for (var i = 0; i < len; i++) {
                         lowerthirdNodes.item(i).titleMsg = newVal.title;
                         lowerthirdNodes.item(i).bodyMsg = newVal.body;
+
+                        // Limit width of title to N px
+                        var title = lowerthirdNodes.item(i).querySelector('#title');
+                        var maxWidth = 800;
+                        var titleWidth =  title.scrollWidth;
+                        if (titleWidth > maxWidth) {
+                            TweenLite.set(title, {scaleX: maxWidth / titleWidth});
+                        } else {
+                            TweenLite.set(title, {scaleX: 1});
+                        }
                     }
                 });
 
