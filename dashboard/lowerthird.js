@@ -25,6 +25,16 @@ var isShowing = nodecg.Replicant('isShowing')
         $show.prop('disabled', newVal);
         $pulse.prop('disabled', newVal);
         $hide.prop('disabled', !newVal);
+
+        // When this changes, disable the "take" button for a bit
+        if ($take.data('cooldownTimer')) {
+            clearTimeout($take.data('cooldownTimer'));
+        }
+
+        $take.prop('disabled', true);
+        $take.data('cooldownTimer', setTimeout(function() {
+            $take.prop('disabled', false);
+        }, 1000));
     });
 
 nodecg.Replicant('isPulsing')
