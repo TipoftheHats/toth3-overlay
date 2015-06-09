@@ -5,7 +5,7 @@ var app = require('express')();
 module.exports = function(nodecg) {
     app.post('/toth3-overlay/donation', function(req, res){
         console.log(req.body);
-        nodecg.sendMessage('donation', req.body);
+        nodecg.sendMessage('donation', req.body.content);
         res.end();
     });
 
@@ -31,4 +31,13 @@ module.exports = function(nodecg) {
             isPulsing.value = false;
         }, duration * 1000);
     });
+
+    /*
+     function getAggregate() {
+     $.getJSON('http://tipofthehats.org/tracker?jsonp=?', null, function(data) {
+     $('#IR_TOTAL').html(data.agg.amount.formatMoney());
+     $('#IR_NUM_OF_CONTRIBUTIONS').html(data.agg.count);
+     });
+     }
+     */
 };

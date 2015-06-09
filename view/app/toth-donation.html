@@ -20,39 +20,95 @@
             font-size: 1.250em;
             font-weight: 600;
             color: #E4E4E4;
-            background-color: rgba(0,0,0,0.5);
+            background-color: rgba(0, 0, 0, 0.5);
         }
     </style>
 
     <template>
         <div id="tag">
-            <span elastic></span>
+            <span></span>
         </div>
         <toth-hudplate id="body">
-            <span elastic></span>
+            <span></span>
         </toth-hudplate>
     </template>
 </dom-module>
 
 <script>
-    Polymer({
-        is: 'toth-donation',
-        properties: {
-            tag: {
-                type: String,
-                observer: 'tagChanged'
+    // Wait until the page is fully loaded, because some of our handlers in here
+    // rely on GSAP being loaded.
+    document.addEventListener('DOMContentLoaded', function () {
+        Polymer({
+            is: 'toth-donation',
+            properties: {
+                tag: {
+                    type: String,
+                    observer: 'tagChanged'
+                },
+                body: {
+                    type: String,
+                    observer: 'bodyChanged'
+                },
+                total: {
+                    type: String,
+                    value: '$0'
+                }
             },
-            body: {
-                type: String,
-                observer: 'bodyChanged'
+            tagChanged: function (newValue) {
+                this.elasticize(this.$.tag.querySelector('span'), newValue);
+            },
+            bodyChanged: function (newValue) {
+                this.elasticize(this.$.body.querySelector('span'), newValue);
+            },
+            ready: function () {
+                this.tag = 'Total';
+                this.body = this.total;
+            },
+            behaviors: [ElasticBehavior]
+        });
+
+        /*
+         * NodeCG bindings
+         */
+        var donationNodes = document.getElementsByTagName('toth-donation');
+        var tl = new TimelineLite({autoRemoveChilren: true});
+
+        nodecg.listenFor('donation', function (data) {
+            // Show donation amount and donor name
+            // Then, go back to showing total
+            tl.to({}, 3.5, {
+                onStart: function () {
+                    doToEach(function (node) {
+                        node.tag = data.amount;
+                        node.body = data.donor__visiblename;
+                    });
+                },
+                onComplete: function () {
+                    doToEach(function (node) {
+                        node.tag = 'Total';
+                        node.body = node.total;
+                        window.testNode = node;
+                        console.log(node);
+                    });
+                }
+            });
+
+            // Kill time
+            tl.set({}, {}, '+=3.5');
+        });
+
+        nodecg.Replicant('total')
+                .on('change', function (oldVal, newVal) {
+                    doToEach(function (node) {
+                        node.total = newVal || '$0';
+                    });
+                });
+
+        function doToEach(fn) {
+            var len = donationNodes.length;
+            for (var i = 0; i < len; i++) {
+                fn(donationNodes.item(i));
             }
-        },
-        tagChanged: function(newValue) {
-            this.elasticize(this.$.tag.querySelector('span'), newValue);
-        },
-        bodyChanged: function(newValue) {
-            this.elasticize(this.$.body.querySelector('span'), newValue);
-        },
-        behaviors: [ElasticBehavior]
+        }
     });
 </script>
