@@ -54,7 +54,7 @@
             max-height: 130px;
             padding: 0.2em 0.5em;
             color: #E4E4E4;
-            background-color: rgba(0,0,0,0.5);
+            background-color: rgba(0, 0, 0, 0.5);
             box-sizing: border-box;
             transform: translateY(-100%);
             word-break: break-word;
@@ -80,12 +80,17 @@
 <script>
     // Wait until the page is fully loaded, because some of our handlers in here
     // rely on GSAP being loaded.
-    document.addEventListener('DOMContentLoaded', function() {
+    document.addEventListener('DOMContentLoaded', function () {
         Polymer({
             is: 'toth-lowerthird',
+
+            /*
+             * Properties
+             */
             properties: {
                 titleMsg: {
-                    type: String
+                    type: String,
+                    observer: 'titleMsgChanged'
                 },
                 bodyMsg: {
                     type: String,
@@ -96,40 +101,50 @@
                     value: 1240
                 }
             },
-            show: function() {
+
+            /*
+             * Methods
+             */
+            show: function () {
                 var line = this.$.line;
                 var logo = this.$.logo;
                 var title = this.$.title;
                 var body = this.$.body;
+                var self = this;
 
-                TweenLite.to(line, 0.8, {
-                    width: Math.max(title.getBoundingClientRect().width, body.getBoundingClientRect().width),
+                self.lineTween = TweenLite.to(line, 0.8, {
+                    width: Math.max(title.getBoundingClientRect().width + logo.offsetWidth, body.offsetWidth),
                     ease: Power3.easeInOut,
-                    onUpdate: function() {
-                        var lineWidth = line.offsetWidth;
+                    onUpdate: function () {
+                        var currLineWidth = line.offsetWidth;
 
-                        if (!logo.showing && lineWidth >= logo.offsetWidth) {
+                        if (!logo.showing && currLineWidth >= logo.offsetWidth) {
                             logo.showing = true;
                             TweenLite.to(logo, 0.5, {y: '0%', ease: Power3.easeOut})
                         }
 
-                        if (!title.showing && lineWidth >= title.getBoundingClientRect().width) {
+                        if (!title.showing && currLineWidth >= title.getBoundingClientRect().width) {
                             title.showing = true;
                             TweenLite.to(title, 0.5, {y: '0%', ease: Power3.easeOut})
                         }
 
-                        if (!body.showing && lineWidth >= body.offsetWidth) {
+                        if (!body.showing && currLineWidth >= body.offsetWidth) {
                             body.showing = true;
                             TweenLite.to(body, 0.5, {y: '0%', ease: Power3.easeOut})
                         }
+                    },
+                    onComplete: function() {
+                        self.lineTween = null;
+                        self.showing = true;
                     }
-                })
+                });
             },
-            hide: function() {
+            hide: function () {
                 var line = this.$.line;
                 var logo = this.$.logo;
                 var title = this.$.title;
                 var body = this.$.body;
+                var self = this;
                 var tl = new TimelineLite();
 
 
@@ -139,16 +154,28 @@
                 tl.to(body, 0.5, {y: '-100%', ease: Power3.easeIn}, 'start+=0.16');
                 tl.to(line, 0.06, {scaleY: '0', ease: Linear.easeNone});
                 tl.set(body, {clearProps: 'transform'});
-                tl.set([title, logo, line], {
+                tl.set([logo, line], {
                     clearProps: 'all',
-                    onComplete: function() {
+                    onComplete: function () {
                         body.showing = false;
                         title.showing = false;
                         logo.showing = false;
+                        self.showing = false;
                     }
                 });
             },
-            bodyMsgChanged: function(newValue) {
+            titleMsgChanged: function () {
+                // Limit width of title to 800 px
+                var title = this.$.title;
+                var maxWidth = 800;
+                var titleWidth = title.scrollWidth;
+                if (titleWidth > maxWidth) {
+                    TweenLite.set(title, {scaleX: maxWidth / titleWidth});
+                } else {
+                    TweenLite.set(title, {scaleX: 1});
+                }
+            },
+            bodyMsgChanged: function (newValue) {
                 var bodyEl = this.$.body;
                 bodyEl.innerHTML = newValue;
                 bodyEl.style.maxWidth = '';
@@ -157,7 +184,7 @@
                     var maxHeight = parseInt(window.getComputedStyle(bodyEl).maxHeight);
                     bodyEl.style.maxWidth = width / 2 + 'px';
                     while (bodyEl.scrollHeight > maxHeight) {
-                        bodyEl.style.maxWidth = (parseInt(bodyEl.style.maxWidth)+1) + 'px';
+                        bodyEl.style.maxWidth = (parseInt(bodyEl.style.maxWidth) + 1) + 'px';
                         if (parseInt(bodyEl.style.maxWidth) >= this.absoluteMaxWidth) break;
                     }
                     if (parseInt(bodyEl.style.maxWidth) >= this.absoluteMaxWidth) {
@@ -174,26 +201,16 @@
         var lowerthirdNodes = document.getElementsByTagName('toth-lowerthird');
 
         nodecg.Replicant('texts')
-                .on('change', function(oldVal, newVal) {
+                .on('change', function (oldVal, newVal) {
                     var len = lowerthirdNodes.length;
                     for (var i = 0; i < len; i++) {
                         lowerthirdNodes.item(i).titleMsg = newVal.title;
                         lowerthirdNodes.item(i).bodyMsg = newVal.body;
-
-                        // Limit width of title to N px
-                        var title = lowerthirdNodes.item(i).querySelector('#title');
-                        var maxWidth = 800;
-                        var titleWidth =  title.scrollWidth;
-                        if (titleWidth > maxWidth) {
-                            TweenLite.set(title, {scaleX: maxWidth / titleWidth});
-                        } else {
-                            TweenLite.set(title, {scaleX: 1});
-                        }
                     }
                 });
 
         nodecg.Replicant('isShowing')
-                .on('change', function(oldVal, newVal) {
+                .on('change', function (oldVal, newVal) {
                     var len = lowerthirdNodes.length;
                     for (var i = 0; i < len; i++) {
                         if (newVal) {
