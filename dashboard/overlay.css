@@ -1,0 +1,23 @@
+.toth3-overlay textarea {
+  height: 3em;
+}
+.toth3-overlay h4 {
+  margin-bottom: 6px;
+}
+.toth3-overlay button[command="take"] {
+  width: 100%;
+  height: 60px;
+}
+.toth3-overlay .column {
+  width: 100%;
+  margin-right: 4px;
+  margin-left: 4px;
+}
+.toth3-overlay .column:first-of-type {
+  margin-right: 4px;
+  margin-left: 0;
+}
+.toth3-overlay .column:last-of-type {
+  margin-right: 0;
+  margin-left: 4px;
+}

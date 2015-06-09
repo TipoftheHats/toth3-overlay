@@ -10,4 +10,25 @@ module.exports = function(nodecg) {
     });
 
     nodecg.mount(app);
+
+    /*
+     * Lowerthird
+     */
+    var isShowing = nodecg.Replicant('isShowing', { defaultValue: false, persistent: false });
+    var isPulsing = nodecg.Replicant('isPulsing', { defaultValue: false, persistent: false });
+    nodecg.Replicant('texts', { defaultValue: {}, persistent: false });
+
+    nodecg.listenFor('pulse', function pulse(duration) {
+        // Don't stack pulses
+        if (isPulsing.value) return;
+
+        isShowing.value = true;
+        isPulsing.value = true;
+
+        // End pulse after "duration" seconds
+        setTimeout(function() {
+            isShowing.value = false;
+            isPulsing.value = false;
+        }, duration * 1000);
+    });
 };

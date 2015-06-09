@@ -58,7 +58,7 @@
 
     <template>
         <div id="head">
-            <div id="title">Title Here</div>
+            <div id="title">{{title}}</div>
             <img id="logo" src="../img/logo.png">
         </div>
         <div id="line"></div>
@@ -69,94 +69,109 @@
 </dom-module>
 
 <script>
-    Polymer({
-        is: 'toth-lowerthird',
-        properties: {
-            title: {
-                type: String,
-                observer: 'titleChanged'
+    document.addEventListener('DOMContentLoaded', function() {
+        Polymer({
+            is: 'toth-lowerthird',
+            properties: {
+                title: {
+                    type: String
+                },
+                body: {
+                    type: String,
+                    observer: 'bodyChanged'
+                }
             },
-            body: {
-                type: String,
-                observer: 'bodyChanged'
-            }
-        },
-        show: function() {
-            var line = this.$.line;
-            var logo = this.$.logo;
-            var title = this.$.title;
-            var body = this.$.body;
+            show: function() {
+                var line = this.$.line;
+                var logo = this.$.logo;
+                var title = this.$.title;
+                var body = this.$.body;
 
-            TweenLite.to(line, 0.8, {
-                width: '100%',
-                ease: Power3.easeInOut,
-                onUpdate: function() {
-                    var lineWidth = line.offsetWidth;
+                TweenLite.to(line, 0.8, {
+                    width: '100%',
+                    ease: Power3.easeInOut,
+                    onUpdate: function() {
+                        var lineWidth = line.offsetWidth;
 
-                    if (!logo.showing && lineWidth >= logo.offsetWidth) {
-                        logo.showing = true;
-                        TweenLite.to(logo, 0.5, {y: '0%', ease: Power3.easeOut})
+                        if (!logo.showing && lineWidth >= logo.offsetWidth) {
+                            logo.showing = true;
+                            TweenLite.to(logo, 0.5, {y: '0%', ease: Power3.easeOut})
+                        }
+
+                        if (!title.showing && lineWidth >= title.offsetWidth) {
+                            title.showing = true;
+                            TweenLite.to(title, 0.5, {y: '0%', ease: Power3.easeOut})
+                        }
+
+                        if (!body.showing && lineWidth >= body.offsetWidth) {
+                            body.showing = true;
+                            TweenLite.to(body, 0.5, {y: '0%', ease: Power3.easeOut})
+                        }
                     }
+                })
+            },
+            hide: function() {
+                var line = this.$.line;
+                var logo = this.$.logo;
+                var title = this.$.title;
+                var body = this.$.body;
 
-                    if (!title.showing && lineWidth >= title.offsetWidth) {
-                        title.showing = true;
-                        TweenLite.to(title, 0.5, {y: '0%', ease: Power3.easeOut})
+                var tl = new TimelineLite();
+                tl.add('start');
+                tl.to(logo, 0.5, {y: '100%', ease: Power3.easeIn}, 'start');
+                tl.to(title, 0.5, {y: '100%', ease: Power3.easeIn}, 'start+=0.08');
+                tl.to(body, 0.5, {y: '-100%', ease: Power3.easeIn}, 'start+=0.16');
+                tl.to(line, 0.06, {scaleY: '0', ease: Linear.easeNone});
+                tl.set(body, {clearProps: 'transform'});
+                tl.set([title, logo, line], {
+                    clearProps: 'all',
+                    onComplete: function() {
+                        body.showing = false;
+                        title.showing = false;
+                        logo.showing = false;
                     }
-
-                    if (!body.showing && lineWidth >= body.offsetWidth) {
-                        body.showing = true;
-                        TweenLite.to(body, 0.5, {y: '0%', ease: Power3.easeOut})
+                });
+            },
+            bodyChanged: function(newValue) {
+                var bodyEl = this.$.body;
+                bodyEl.innerHTML = newValue;
+                bodyEl.style.maxWidth = '';
+                var width = bodyEl.offsetWidth;
+                if (width >= 1200) {
+                    var maxHeight = parseInt(window.getComputedStyle(bodyEl).maxHeight);
+                    bodyEl.style.maxWidth = width / 2 + 'px';
+                    while (bodyEl.scrollHeight > maxHeight) {
+                        bodyEl.style.maxWidth = (parseInt(bodyEl.style.maxWidth)+1) + 'px';
                     }
-                }
-            })
-        },
-        hide: function() {
-            var line = this.$.line;
-            var logo = this.$.logo;
-            var title = this.$.title;
-            var body = this.$.body;
-
-            var tl = new TimelineLite();
-            tl.add('start');
-            tl.to(logo, 0.5, {y: '100%', ease: Power3.easeIn}, 'start');
-            tl.to(title, 0.5, {y: '100%', ease: Power3.easeIn}, 'start+=0.08');
-            tl.to(body, 0.5, {y: '-100%', ease: Power3.easeIn}, 'start+=0.16');
-            tl.to(line, 0.06, {scaleY: '0', ease: Linear.easeNone});
-            tl.set(body, {clearProps: 'transform'});
-            tl.set([title, logo, line], {
-                clearProps: 'all',
-                onComplete: function() {
-                    body.showing = false;
-                    title.showing = false;
-                    logo.showing = false;
-                }
-            });
-        },
-        tagChanged: function(newValue) {
-
-        },
-        bodyChanged: function(newValue) {
-            var bodyEl = this.$.body;
-            bodyEl.innerHTML = newValue;
-            bodyEl.style.maxWidth = '';
-            var width = bodyEl.offsetWidth;
-            console.log('changed, offsetWidth:', width);
-            if (width >= 1200) {
-                var maxHeight = parseInt(window.getComputedStyle(bodyEl).maxHeight);
-                bodyEl.style.maxWidth = width / 2 + 'px';
-                console.log('width greater than 1200, setting maxWidth to:', width / 2);
-                console.log('bodyEl.scrollHeight: %d, maxHeight: %d', bodyEl.scrollHeight, maxHeight);
-                while (bodyEl.scrollHeight > maxHeight) {
-                    bodyEl.style.maxWidth = (parseInt(bodyEl.style.maxWidth)+1) + 'px';
                 }
             }
-        },
-        attached: function() {
-            var self = this;
-            window.lowerthird = self;
-            setTimeout(function() {
-                self.body = 'Hello this is a pretty dang long body string.'
-            }, 250);
-        }
-    });
+        });
+
+        /*
+         * NodeCG bindings
+         */
+
+        var lowerthirdNodes = document.getElementsByTagName('toth-lowerthird');
+
+        nodecg.Replicant('texts')
+                .on('change', function(oldVal, newVal) {
+                    var len = lowerthirdNodes.length;
+                    for (var i = 0; i < len; i++) {
+                        lowerthirdNodes.item(i).title = newVal.title;
+                        lowerthirdNodes.item(i).body = newVal.body;
+                    }
+                });
+
+        nodecg.Replicant('isShowing')
+                .on('change', function(oldVal, newVal) {
+                    var len = lowerthirdNodes.length;
+                    for (var i = 0; i < len; i++) {
+                        if (newVal) {
+                            lowerthirdNodes.item(i).show();
+                        } else {
+                            lowerthirdNodes.item(i).hide();
+                        }
+                    }
+                });
+    }, false);
 </script>
