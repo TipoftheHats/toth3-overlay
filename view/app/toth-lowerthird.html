@@ -43,12 +43,20 @@
         }
 
         #body {
+            /* fuckin what, webkit? */
+            /* only way I could find to get 'text-overflow: ellipsis' functionality on a paragraph */
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+
+            overflow: hidden;
             max-height: 130px;
             padding: 0.2em 0.5em;
             color: #E4E4E4;
             background-color: rgba(0,0,0,0.5);
             box-sizing: border-box;
             transform: translateY(-100%);
+            word-break: break-word;
         }
 
         #bodyContainer {
@@ -58,7 +66,7 @@
 
     <template>
         <div id="head">
-            <div id="title">{{title}}</div>
+            <div id="title">{{titleMsg}}</div>
             <img id="logo" src="../img/logo.png">
         </div>
         <div id="line"></div>
@@ -69,16 +77,22 @@
 </dom-module>
 
 <script>
+    // Wait until the page is fully loaded, because some of our handlers in here
+    // rely on GSAP being loaded.
     document.addEventListener('DOMContentLoaded', function() {
         Polymer({
             is: 'toth-lowerthird',
             properties: {
-                title: {
+                titleMsg: {
                     type: String
                 },
-                body: {
+                bodyMsg: {
                     type: String,
-                    observer: 'bodyChanged'
+                    observer: 'bodyMsgChanged'
+                },
+                absoluteMaxWidth: {
+                    type: Number,
+                    value: 1240
                 }
             },
             show: function() {
@@ -115,8 +129,9 @@
                 var logo = this.$.logo;
                 var title = this.$.title;
                 var body = this.$.body;
-
                 var tl = new TimelineLite();
+
+
                 tl.add('start');
                 tl.to(logo, 0.5, {y: '100%', ease: Power3.easeIn}, 'start');
                 tl.to(title, 0.5, {y: '100%', ease: Power3.easeIn}, 'start+=0.08');
@@ -132,16 +147,20 @@
                     }
                 });
             },
-            bodyChanged: function(newValue) {
+            bodyMsgChanged: function(newValue) {
                 var bodyEl = this.$.body;
                 bodyEl.innerHTML = newValue;
                 bodyEl.style.maxWidth = '';
                 var width = bodyEl.offsetWidth;
-                if (width >= 1200) {
+                if (width >= this.absoluteMaxWidth) {
                     var maxHeight = parseInt(window.getComputedStyle(bodyEl).maxHeight);
                     bodyEl.style.maxWidth = width / 2 + 'px';
                     while (bodyEl.scrollHeight > maxHeight) {
                         bodyEl.style.maxWidth = (parseInt(bodyEl.style.maxWidth)+1) + 'px';
+                        if (parseInt(bodyEl.style.maxWidth) >= this.absoluteMaxWidth) break;
+                    }
+                    if (parseInt(bodyEl.style.maxWidth) >= this.absoluteMaxWidth) {
+                        bodyEl.style.maxWidth = this.absoluteMaxWidth + 'px';
                     }
                 }
             }
@@ -157,8 +176,8 @@
                 .on('change', function(oldVal, newVal) {
                     var len = lowerthirdNodes.length;
                     for (var i = 0; i < len; i++) {
-                        lowerthirdNodes.item(i).title = newVal.title;
-                        lowerthirdNodes.item(i).body = newVal.body;
+                        lowerthirdNodes.item(i).titleMsg = newVal.title;
+                        lowerthirdNodes.item(i).bodyMsg = newVal.body;
                     }
                 });
 

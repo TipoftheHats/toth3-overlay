@@ -12,6 +12,12 @@ var texts = nodecg.Replicant('texts')
     .on('change', function(oldVal, newVal) {
         $program.find('.js-title').val(newVal.title);
         $program.find('.js-body').val(newVal.body);
+
+        var evt = document.createEvent('Event');
+        var el = $program.find('.js-body')[0];
+        evt.initEvent('autosize:update', true, false);
+        el.dispatchEvent(evt);
+        simulateClick(el);
     });
 
 var isShowing = nodecg.Replicant('isShowing')
@@ -44,3 +50,21 @@ $hide.click(function () {
 $pulse.click(function () {
     nodecg.sendMessage('pulse', $(this).data('duration'));
 });
+
+/*
+ * Make the "Body" textareas automatically size themselves
+ */
+autosize($panel[0].querySelectorAll('textarea'));
+$preview.find('.js-body').on('autosize:resized', function(){
+    simulateClick(this);
+});
+
+// Simulates a "click" event, which triggers Masonry to re-position the panels if necessary.
+function simulateClick(el) {
+    var event = new MouseEvent('click', {
+        'view': window,
+        'bubbles': true,
+        'cancelable': true
+    });
+    el.dispatchEvent(event);
+}

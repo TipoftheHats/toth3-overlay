@@ -3,6 +3,7 @@
   "dependencies": {
     "gsap": "~1.16.1",
     "jquery": "~2.1.4",
-    "Snap.svg": "~0.4.1"
+    "Snap.svg": "~0.4.1",
+    "autosize": "~3.0.6"
   }
 }
