@@ -1,3 +1,7 @@
+@import "../variables.less";
+@tag-inner-padding: 1.6em;
+@tag-outer-padding: 0.12em;
+
 :host {
     display: flex;
     width: 800px;
@@ -16,8 +20,14 @@
             align-items: flex-end;
         }
 
+        .tagWrapper {
+            padding-right: @tag-inner-padding;
+            padding-left: @tag-outer-padding;
+        }
+
         .tag {
             text-align: left;
+            transform-origin: left;
         }
     }
 
@@ -27,28 +37,34 @@
             align-items: flex-start;
         }
 
+        .tagWrapper {
+            padding-right: @tag-outer-padding;
+            padding-left: @tag-inner-padding;
+        }
+
         .tag {
             text-align: right;
+            transform-origin: right;
         }
     }
 
     &[team="blu"] {
         .score {
-            background-color: #127FDC;
+            background-color: @team-blu;
         }
 
         .line {
-            background-color: #127FDC;
+            background-color: @team-blu;
         }
     }
 
     &[team="red"] {
         .score {
-            background-color: #F53641;
+            background-color: @team-red;
         }
 
         .line {
-            background-color: #F53641;
+            background-color: @team-red;
         }
     }
 }
@@ -64,14 +80,17 @@
     overflow: hidden;
 }
 
+.tagWrapper {
+    max-width: 200px;
+    background-color: #D3C9C9;
+    transform: translateY(100%);
+}
+
 .tag {
     height: 100%;
-    padding: 0 0.06em;
     font-size: 1.524em;
     line-height: 0.96em;
     text-transform: uppercase;
-    background-color: #D3C9C9;
-    transform: translateY(100%);
 }
 
 .score {

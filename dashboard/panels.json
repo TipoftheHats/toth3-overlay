@@ -16,7 +16,7 @@
   {
     "name": "scoreboard",
     "title": "Scoreboard",
-    "width": 2,
+    "width": 4,
     "file": "scoreboard.jade",
     "faIcon": "fa-flag"
   }

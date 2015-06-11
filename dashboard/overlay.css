@@ -7,7 +7,6 @@
 }
 .toth3-overlay button[command="take"] {
   width: 100%;
-  height: 60px;
 }
 .toth3-overlay .column {
   width: 100%;
@@ -21,4 +20,19 @@
 .toth3-overlay .column:last-of-type {
   margin-right: 0;
   margin-left: 4px;
+}
+.toth3-overlay.lowerthird button[command="take"] {
+  height: 60px;
+}
+.toth3-overlay.scoreboard .input-group {
+  margin-bottom: 4px;
+}
+.toth3-overlay.scoreboard .ncg-label {
+  margin-top: 0;
+}
+.toth3-overlay.scoreboard .color-blu {
+  color: #127fdc;
+}
+.toth3-overlay.scoreboard .color-red {
+  color: #f53641;
 }

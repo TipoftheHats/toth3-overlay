@@ -13,27 +13,37 @@
   float: right;
   align-items: flex-end;
 }
+.cull:first-child .tagWrapper {
+  padding-right: 1.6em;
+  padding-left: 0.12em;
+}
 .cull:first-child .tag {
   text-align: left;
+  transform-origin: left;
 }
 .cull:last-child .wrapper {
   float: left;
   align-items: flex-start;
 }
+.cull:last-child .tagWrapper {
+  padding-right: 0.12em;
+  padding-left: 1.6em;
+}
 .cull:last-child .tag {
   text-align: right;
+  transform-origin: right;
 }
 .cull[team="blu"] .score {
-  background-color: #127FDC;
+  background-color: #127fdc;
 }
 .cull[team="blu"] .line {
-  background-color: #127FDC;
+  background-color: #127fdc;
 }
 .cull[team="red"] .score {
-  background-color: #F53641;
+  background-color: #f53641;
 }
 .cull[team="red"] .line {
-  background-color: #F53641;
+  background-color: #f53641;
 }
 .wrapper {
   display: flex;
@@ -44,14 +54,16 @@
   height: 1.357em;
   overflow: hidden;
 }
+.tagWrapper {
+  max-width: 200px;
+  background-color: #D3C9C9;
+  transform: translateY(100%);
+}
 .tag {
   height: 100%;
-  padding: 0 0.06em;
   font-size: 1.524em;
   line-height: 0.96em;
   text-transform: uppercase;
-  background-color: #D3C9C9;
-  transform: translateY(100%);
 }
 .score {
   width: 64px;
