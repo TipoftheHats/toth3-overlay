@@ -5,13 +5,14 @@ mixin controlSet(disabled)
         +control("red", disabled)
 
 mixin control(team, disabled)
+    - var baseTabIndex = (team === 'blu' ? 1 : 2)
     .ncg-label(class="color-"+team)=team.toUpperCase()
     .input-group
         span.input-group-addon Tag
-        input.form-control(type="text" team=team field="tag" disabled=disabled)
+        input.form-control(type="text" team=team field="tag" tabIndex=baseTabIndex disabled=disabled)
     .input-group
         span.input-group-addon Score
-        input.form-control(type="number" team=team field="score" disabled=disabled)
+        input.form-control(type="number" min="0" max="9" team=team field="score" tabIndex=baseTabIndex+2 disabled=disabled)
 
 div(style="display: flex;")
     .column

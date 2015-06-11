@@ -31,7 +31,7 @@
 }
 .cull:last-child .tag {
   text-align: right;
-  transform-origin: right;
+  transform-origin: left;
 }
 .cull[team="blu"] .score {
   background-color: #127fdc;
