@@ -72,7 +72,7 @@
         </div>
         <div id="line"></div>
         <div id="bodyContainer">
-            <div id="body"></div>
+            <div id="body">{{bodyMsg}}</div>
         </div>
     </template>
 </dom-module>
@@ -103,6 +103,44 @@
             },
 
             /*
+             * Observers
+             */
+            titleMsgChanged: function () {
+                // Limit width of title to 800 px
+                var title = this.$.title;
+                var maxWidth = 800;
+                var titleWidth = title.scrollWidth;
+                if (titleWidth > maxWidth) {
+                    TweenLite.set(title, {scaleX: maxWidth / titleWidth});
+                } else {
+                    TweenLite.set(title, {scaleX: 1});
+                }
+            },
+            bodyMsgChanged: function (newValue) {
+                var bodyEl = this.$.body;
+                bodyEl.style.maxWidth = '';
+                var width = bodyEl.offsetWidth;
+                if (width >= this.absoluteMaxWidth) {
+                    var maxHeight = parseInt(window.getComputedStyle(bodyEl).maxHeight);
+                    bodyEl.style.maxWidth = width / 2 + 'px';
+                    while (bodyEl.scrollHeight > maxHeight) {
+                        bodyEl.style.maxWidth = (parseInt(bodyEl.style.maxWidth) + 1) + 'px';
+                        if (parseInt(bodyEl.style.maxWidth) >= this.absoluteMaxWidth) break;
+                    }
+                    if (parseInt(bodyEl.style.maxWidth) >= this.absoluteMaxWidth) {
+                        bodyEl.style.maxWidth = this.absoluteMaxWidth + 'px';
+                    }
+                }
+
+                if (bodyEl.showing) {
+                    TweenLite.set(this.$.line, {
+                        width: Math.max(this.$.title.getBoundingClientRect().width + this.$.logo.offsetWidth,
+                                bodyEl.offsetWidth)
+                    });
+                }
+            },
+
+            /*
              * Methods
              */
             show: function () {
@@ -112,7 +150,7 @@
                 var body = this.$.body;
                 var self = this;
 
-                self.lineTween = TweenLite.to(line, 0.8, {
+                TweenLite.to(line, 0.8, {
                     width: Math.max(title.getBoundingClientRect().width + logo.offsetWidth, body.offsetWidth),
                     ease: Power3.easeInOut,
                     onUpdate: function () {
@@ -147,7 +185,6 @@
                 var self = this;
                 var tl = new TimelineLite();
 
-
                 tl.add('start');
                 tl.to(logo, 0.5, {y: '100%', ease: Power3.easeIn}, 'start');
                 tl.to(title, 0.5, {y: '100%', ease: Power3.easeIn}, 'start+=0.08');
@@ -163,41 +200,12 @@
                         self.showing = false;
                     }
                 });
-            },
-            titleMsgChanged: function () {
-                // Limit width of title to 800 px
-                var title = this.$.title;
-                var maxWidth = 800;
-                var titleWidth = title.scrollWidth;
-                if (titleWidth > maxWidth) {
-                    TweenLite.set(title, {scaleX: maxWidth / titleWidth});
-                } else {
-                    TweenLite.set(title, {scaleX: 1});
-                }
-            },
-            bodyMsgChanged: function (newValue) {
-                var bodyEl = this.$.body;
-                bodyEl.innerHTML = newValue;
-                bodyEl.style.maxWidth = '';
-                var width = bodyEl.offsetWidth;
-                if (width >= this.absoluteMaxWidth) {
-                    var maxHeight = parseInt(window.getComputedStyle(bodyEl).maxHeight);
-                    bodyEl.style.maxWidth = width / 2 + 'px';
-                    while (bodyEl.scrollHeight > maxHeight) {
-                        bodyEl.style.maxWidth = (parseInt(bodyEl.style.maxWidth) + 1) + 'px';
-                        if (parseInt(bodyEl.style.maxWidth) >= this.absoluteMaxWidth) break;
-                    }
-                    if (parseInt(bodyEl.style.maxWidth) >= this.absoluteMaxWidth) {
-                        bodyEl.style.maxWidth = this.absoluteMaxWidth + 'px';
-                    }
-                }
             }
         });
 
         /*
          * NodeCG bindings
          */
-
         var lowerthirdNodes = document.getElementsByTagName('toth-lowerthird');
 
         nodecg.Replicant('texts')
@@ -209,7 +217,7 @@
                     }
                 });
 
-        nodecg.Replicant('isShowing')
+        nodecg.Replicant('lowerthirdShowing')
                 .on('change', function (oldVal, newVal) {
                     var len = lowerthirdNodes.length;
                     for (var i = 0; i < len; i++) {

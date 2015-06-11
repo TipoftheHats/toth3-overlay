@@ -14,21 +14,21 @@ module.exports = function(nodecg) {
     /*
      * Lowerthird
      */
-    var isShowing = nodecg.Replicant('isShowing', { defaultValue: false, persistent: false });
-    var isPulsing = nodecg.Replicant('isPulsing', { defaultValue: false, persistent: false });
+    var lowerthirdShowing = nodecg.Replicant('lowerthirdShowing', { defaultValue: false, persistent: false });
+    var lowerthirdPulsing = nodecg.Replicant('lowerthirdPulsing', { defaultValue: false, persistent: false });
     nodecg.Replicant('texts', { defaultValue: {}, persistent: false });
 
     nodecg.listenFor('pulse', function pulse(duration) {
         // Don't stack pulses
-        if (isPulsing.value) return;
+        if (lowerthirdPulsing.value) return;
 
-        isShowing.value = true;
-        isPulsing.value = true;
+        lowerthirdShowing.value = true;
+        lowerthirdPulsing.value = true;
 
         // End pulse after "duration" seconds
         setTimeout(function() {
-            isShowing.value = false;
-            isPulsing.value = false;
+            lowerthirdShowing.value = false;
+            lowerthirdPulsing.value = false;
         }, duration * 1000);
     });
 

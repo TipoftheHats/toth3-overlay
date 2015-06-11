@@ -1,0 +1,175 @@
+<dom-module id="toth-scoreboard">
+    <link rel="import" type="css" href="../style/toth-scoreboard.css">
+
+    <template>
+        <div class="cull" team="blu">
+            <div class="wrapper">
+                <div class="details">
+                    <div class="score">0</div>
+                    <div class="tag">BLU</div>
+                </div>
+                <div class="line"></div>
+            </div>
+        </div>
+        <div id="logoWrapper">
+            <img id="logo" src="../img/transparent_logo.png">
+        </div>
+        <div class="cull" team="red">
+            <div class="wrapper">
+                <div class="details">
+                    <div class="tag">RED</div>
+                    <div class="score">0</div>
+                </div>
+                <div class="line"></div>
+            </div>
+        </div>
+    </template>
+</dom-module>
+
+<script>
+    // Wait until the page is fully loaded, because some of our handlers in here
+    // rely on GSAP being loaded.
+    document.addEventListener('DOMContentLoaded', function () {
+        Polymer({
+            is: 'toth-scoreboard',
+
+            /*
+             * Properties
+             */
+            properties: {
+                redScore: {
+                    type: Number,
+                    value: 0,
+                    observer: 'redScoreChanged'
+                },
+                bluScore: {
+                    type: Number,
+                    value: 0,
+                    observer: 'bluScoreChanged'
+                },
+                redTag: {
+                    type: String,
+                    value: 'RED',
+                    observer: 'redTagChanged'
+                },
+                bluTag: {
+                    type: String,
+                    value: 'BLU',
+                    observer: 'bluTagChanged'
+                }
+            },
+
+            /*
+             * Observers
+             */
+            redTagChanged: function(newVal) {
+                this.changeTag(this.$$('div[team="red"] .tag'), newVal);
+            },
+            bluTagChanged: function(newVal) {
+                this.changeTag(this.$$('div[team="blu"] .tag'), newVal);
+            },
+
+            /*
+             * Lifecycle
+             */
+            ready: function () {
+                TweenLite.set(this.$.logo, {scale: '0', y: '21px'});
+            },
+
+            /*
+             * Methods
+             */
+            show: function () {
+                var lines = this.getElementsByClassName('line');
+                var tags = this.getElementsByClassName('tag');
+                var scores = this.getElementsByClassName('score');
+                var logo = this.$.logo;
+                var self = this;
+                var tl = new TimelineLite();
+
+                tl.set(logo, {scale: '0', y: '21px'});
+                tl.add('start');
+                tl.to(logo, 0.6, {
+                    scale: '1',
+                    ease: Back.easeOut
+                }, 'start');
+                tl.to(lines, 0.8, {
+                    width: '100%',
+                    ease: Power3.easeInOut,
+                    onUpdate: function () {
+                        var currLineWidth = lines.item(0).offsetWidth;
+
+                        if (!self.tagsShowing && currLineWidth >= tags.item(0).offsetWidth) {
+                            self.tagsShowing = true;
+                            TweenLite.to(tags, 0.5, {y: '0%', ease: Power3.easeOut});
+                            TweenLite.to(logo, 0.5, {y: '0%', ease: Power3.easeOut});
+                        }
+
+                        if (!self.scoresShowing && currLineWidth >= tags.item(0).offsetWidth + scores.item(0).offsetWidth) {
+                            self.scoresShowing = true;
+                            TweenLite.to(scores, 0.5, {y: '0%', ease: Power3.easeOut});
+                        }
+                    }
+                }, 'start');
+            },
+            hide: function () {
+                var wrappers = this.getElementsByClassName('wrapper');
+                var tags = this.getElementsByClassName('tag');
+                var scores = this.getElementsByClassName('score');
+                var lines = this.getElementsByClassName('line');
+                var logo = this.$.logo;
+                var self = this;
+                var tl = new TimelineLite();
+
+                tl.add('start');
+                tl.to(wrappers.item(0), 0.5, {x: '100%', ease: Power3.easeIn}, 'start');
+                tl.to(wrappers.item(1), 0.5, {x: '-100%', ease: Power3.easeIn}, 'start');
+                tl.to(logo, 0.5, {scale: '0', ease: Back.easeIn}, 'start+=0.2');
+                tl.set(tags, {clearProps: 'transform'});
+                tl.set([wrappers, logo, scores, lines], {
+                    clearProps: 'all',
+                    onComplete: function () {
+                        self.scoresShowing = false;
+                        self.tagsShowing = false;
+                    }
+                });
+            },
+            changeTag: function(tagEl, newValue) {
+                tagEl.innerHTML = newValue;
+
+                var bluTag = this.$$('div[team="blu"] .tag');
+                var redTag = this.$$('div[team="red"] .tag');
+                var width = Math.max(bluTag.offsetWidth, redTag.offsetWidth);
+                width += 25;
+                bluTag.style.width = width + 'px';
+                redTag.style.width = width + 'px';
+            }
+        });
+
+        /*
+         * NodeCG bindings
+         */
+        var scoreboardNodes = document.getElementsByTagName('toth-scoreboard');
+
+        /*nodecg.Replicant('texts')
+                .on('change', function (oldVal, newVal) {
+                    var len = lowerthirdNodes.length;
+                    for (var i = 0; i < len; i++) {
+                        lowerthirdNodes.item(i).titleMsg = newVal.title;
+                        lowerthirdNodes.item(i).bodyMsg = newVal.body;
+                    }
+                });*/
+
+        nodecg.Replicant('scoreboardShowing')
+                .on('change', function (oldVal, newVal) {
+                    var len = scoreboardNodes.length;
+                    for (var i = 0; i < len; i++) {
+                        if (newVal) {
+                            scoreboardNodes.item(i).show();
+                        } else {
+                            scoreboardNodes.item(i).hide();
+                        }
+                    }
+                });
+    }, false);
+</script>

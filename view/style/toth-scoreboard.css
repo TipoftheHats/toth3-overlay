@@ -1,0 +1,80 @@
+:host {
+  display: flex;
+  width: 800px;
+  font-family: "proxima-nova";
+  font-size: 42px;
+  font-weight: 800;
+}
+.cull {
+  width: 400px;
+  overflow: hidden;
+}
+.cull:first-child .wrapper {
+  float: right;
+  align-items: flex-end;
+}
+.cull:first-child .tag {
+  text-align: left;
+}
+.cull:last-child .wrapper {
+  float: left;
+  align-items: flex-start;
+}
+.cull:last-child .tag {
+  text-align: right;
+}
+.cull[team="blu"] .score {
+  background-color: #127FDC;
+}
+.cull[team="blu"] .line {
+  background-color: #127FDC;
+}
+.cull[team="red"] .score {
+  background-color: #F53641;
+}
+.cull[team="red"] .line {
+  background-color: #F53641;
+}
+.wrapper {
+  display: flex;
+  flex-direction: column;
+}
+.details {
+  display: flex;
+  height: 1.357em;
+  overflow: hidden;
+}
+.tag {
+  height: 100%;
+  padding: 0 0.06em;
+  font-size: 1.524em;
+  line-height: 0.96em;
+  text-transform: uppercase;
+  background-color: #D3C9C9;
+  transform: translateY(100%);
+}
+.score {
+  width: 64px;
+  height: 64px;
+  color: #FFFFFF;
+  text-align: center;
+  line-height: 67px;
+  font-size: 71px;
+  font-weight: 600;
+  transform: translateY(100%);
+}
+.line {
+  width: 0;
+  height: 0.17em;
+  transform-origin: center;
+}
+#logoWrapper {
+  position: absolute;
+  top: -4px;
+  z-index: 1;
+  transform: translateX(-50%);
+}
+#logo {
+  height: 72px;
+  transform: scale(0);
+}

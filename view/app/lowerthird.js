@@ -6,4 +6,6 @@
     Snap.load('img/toth_layout.svg', function (layout) {
         s.append(layout);
     });
+
+    window.scoreboard = document.getElementById('scoreboard');
 })();

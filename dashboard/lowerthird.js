@@ -20,7 +20,7 @@ var texts = nodecg.Replicant('texts')
         simulateClick(el);
     });
 
-var isShowing = nodecg.Replicant('isShowing')
+var lowerthirdShowing = nodecg.Replicant('lowerthirdShowing')
     .on('change', function(oldVal, newVal) {
         $show.prop('disabled', newVal);
         $pulse.prop('disabled', newVal);
@@ -37,9 +37,9 @@ var isShowing = nodecg.Replicant('isShowing')
         }, 1000));
     });
 
-nodecg.Replicant('isPulsing')
+nodecg.Replicant('lowerthirdPulsing')
     .on('change', function(oldVal, newVal) {
-        $hide.prop('disabled', !isShowing.value ? true : newVal);
+        $hide.prop('disabled', !lowerthirdShowing.value ? true : newVal);
     });
 
 $take.click(function () {
@@ -50,11 +50,11 @@ $take.click(function () {
 });
 
 $show.click(function () {
-    isShowing.value = true;
+    lowerthirdShowing.value = true;
 });
 
 $hide.click(function () {
-    isShowing.value = false;
+    lowerthirdShowing.value = false;
 });
 
 $pulse.click(function () {
