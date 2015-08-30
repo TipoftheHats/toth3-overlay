@@ -1,0 +1,111 @@
+<dom-module id="toth-sponsors">
+    <style>
+        :host {
+            position: absolute;
+            box-sizing: border-box;
+            top: 95px;
+            left: 25px;
+            display: block;
+            width: 250px;
+            height: 150px;
+            background-color: rgba(0, 0, 0, 0.5);
+        }
+
+        .logo {
+            box-sizing: border-box;
+            width: calc(250px - 24px);
+            top: 12px;
+            left: 12px;
+            height: calc(150px - 24px);
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: center;
+            opacity: 0;
+            position: absolute;
+        }
+    </style>
+
+    <template>
+        <div id="currentLogo" class="logo"></div>
+        <div id="nextLogo" class="logo"></div>
+    </template>
+</dom-module>
+
+<script>
+    // Wait until the page is fully loaded, because some of our handlers in here
+    // rely on GSAP being loaded.
+    document.addEventListener('DOMContentLoaded', function () {
+        Polymer({
+            is: 'toth-sponsors',
+
+            properties: {
+                logoUrls: {
+                    type: Array,
+                    value: [
+                        'url("img/sponsors/ignite.png")',
+                        'url("img/sponsors/twitch.png")'
+                    ]
+                },
+                duration: {
+                    type: Number,
+                    value: 15
+                },
+                fadeTime: {
+                    type: Number,
+                    value: 0.5
+                },
+                tl: {
+                    type: Object,
+                    value: new TimelineLite({autoRemoveChildren: true})
+                }
+            },
+
+            /*
+             * Methods
+             */
+            show: function() {
+                // Clear any existing tweens
+                this.tl.clear();
+
+                // Slide in from left
+                this.tl.to(this, 0.6, {x: 0, ease: Power2.easeOut});
+
+                // Show the first logo
+                this.tl.set(this.$.currentLogo, {backgroundImage: this.logoUrls[0]});
+                this.tl.to(this.$.currentLogo, this.fadeTime, {opacity: 1, ease: Power1.easeInOut});
+
+                // Set up tweens for each subsequent logo
+                for (var i = 1; i < this.logoUrls.length; i++) {
+                    // Load the next logo into #nextLogo
+                    this.tl.set(this.$.nextLogo, {backgroundImage: this.logoUrls[i]}, '+=' + this.duration);
+
+                    // Crossfade from #currentLogo to #nextLogo
+                    this.tl.to(this.$.currentLogo, this.fadeTime, {opacity: 0, ease: Power1.easeInOut});
+                    this.tl.to(this.$.nextLogo, this.fadeTime, {opacity: 1, ease: Power1.easeInOut});
+
+                    // Move #nextLogo's image into #currentLogo, and reset everything else.
+                    this.tl.set(this.$.currentLogo, {opacity: 1, backgroundImage: this.logoUrls[i]});
+                    this.tl.set(this.$.nextLogo, {opacity: 0, backgroundImage: ''});
+                }
+
+                // Hide the last logo
+                this.tl.to(this.$.currentLogo, this.fadeTime, {opacity: 0, ease: Power1.easeInOut}, '+=' + this.duration);
+
+                // Slide out to left
+                this.tl.to(this, 0.6, {x: -300, ease: Power2.easeIn});
+            },
+
+            /*
+             * Lifecycle
+             */
+
+            ready: function() {
+                TweenLite.set(this, {x: -300});
+
+                // Show every 10 minutes
+                this.show();
+                setInterval(this.show, 10 * 60 * 1000);
+            }
+        });
+    }, false);
+</script>
