@@ -34,7 +34,7 @@ module.exports = function(nodecg) {
             artist: track.artist['#text'],
             song: track.name,
             album: track.album['#text'],
-            cover: track.image[0]['#text'],
+            cover: track.image[1]['#text'],
             artistSong: track.artist['#text'] + ' - ' + track.name
         };
 
