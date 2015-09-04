@@ -51,6 +51,10 @@
                     type: Number,
                     value: 15
                 },
+                interval: {
+                    type: Number,
+                    value: 10 * 60
+                },
                 fadeTime: {
                     type: Number,
                     value: 0.5
@@ -105,7 +109,7 @@
 
                 // Show every 10 minutes
                 this.show();
-                setInterval(this.show, 10 * 60 * 1000);
+                setInterval(this.show, this.interval * 1000);
             }
         });
     }, false);
