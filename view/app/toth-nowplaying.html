@@ -121,6 +121,8 @@
             },
 
             titleChanged: function(newVal) {
+                this.$.title.innerHTML = '&#9834; ' + newVal;
+
                 var title = this.$.title;
                 var titleWidth = title.scrollWidth;
                 var maxWidth = this._getElementContentWidth(this.$.details);
@@ -129,8 +131,6 @@
                 } else {
                     TweenLite.set(title, {scaleX: 1});
                 }
-
-                this.$.title.innerHTML = '&#9834; ' + newVal;
             },
 
             artistChanged: function() {
