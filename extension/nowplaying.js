@@ -38,8 +38,6 @@ module.exports = function(nodecg) {
             artistSong: track.artist['#text'] + ' - ' + track.name
         };
 
-        console.log(track.image);
-
         // If the graphic is already showing, end it prematurely and show the new song
         if (pulsing.value) {
             clearTimeout(pulseTimeout);
