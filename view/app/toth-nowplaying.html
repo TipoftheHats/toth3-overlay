@@ -153,10 +153,6 @@
                 var nowPlaying = nodecg.Replicant('nowPlaying');
                 var pulsing = nodecg.Replicant('pulsing');
 
-                nowPlaying.on('change', function(oldVal, newVal) {
-                    console.log(newVal);
-                });
-
                 pulsing.on('change', function(oldVal, newVal) {
                     if (newVal) {
                         self.show(nowPlaying.value.artist, nowPlaying.value.song, nowPlaying.value.cover);
