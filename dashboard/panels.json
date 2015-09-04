@@ -19,5 +19,12 @@
     "width": 4,
     "file": "scoreboard.jade",
     "faIcon": "fa-flag"
+  },
+  {
+    "name": "nowplaying",
+    "title": "Now Playing",
+    "width": 2,
+    "file": "nowplaying.jade",
+    "faIcon": "fa-music"
   }
 ]

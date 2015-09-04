@@ -37,3 +37,9 @@ body { margin: 0 }
     top: 805px;
     right: 88px;
 }
+
+#nowPlaying {
+    position: absolute;
+    top: 680px;
+    left: 47px;
+}

@@ -21,4 +21,11 @@ module.exports = function(nodecg) {
         nodecg.log.error('Failed to load donations lib:', e.stack);
         process.exit(1);
     }
+
+    try {
+        require('./extension/nowplaying')(nodecg);
+    } catch (e) {
+        nodecg.log.error('Failed to load "now playing" lib:', e.stack);
+        process.exit(1);
+    }
 };
