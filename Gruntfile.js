@@ -2,19 +2,6 @@
 
 module.exports = function(grunt) {
     grunt.initConfig({
-        jade: {
-            compile: {
-                options: {
-                    pretty: true,
-                    data: {
-                        debug: false
-                    }
-                },
-                files: {
-                    'view/index.html': ['src/view/index.jade']
-                }
-            }
-        },
         less: {
             dev: {
                 files: {
@@ -29,10 +16,9 @@ module.exports = function(grunt) {
         }
     });
 
-    grunt.loadNpmTasks('grunt-contrib-jade');
     grunt.loadNpmTasks('grunt-contrib-less');
     grunt.loadNpmTasks('grunt-contrib-watch');
 
-    grunt.registerTask('default', ['jade', 'less']);
+    grunt.registerTask('default', ['less']);
 
 };
