@@ -109,7 +109,7 @@
 
                 // Show every 10 minutes
                 this.show();
-                setInterval(this.show, this.interval * 1000);
+                setInterval(this.show.bind(this), this.interval * 1000);
             }
         });
     }, false);
