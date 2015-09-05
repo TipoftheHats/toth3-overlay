@@ -1,0 +1,15 @@
+body { margin: 0 }
+
+#container {
+    position: absolute;
+    width: 1920px;
+    height: 1080px;
+    overflow: hidden;
+    font-family: "proxima-nova";
+}
+
+#cardTest {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+}

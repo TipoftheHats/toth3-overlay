@@ -1,0 +1,132 @@
+<link rel="import" href="../../components/polymer/polymer.html">
+<link rel="import" href="../../components/iron-image/iron-image.html">
+
+<dom-module id="toth-dotafortress-card">
+    <style>
+        :host {
+            display: flex;
+            flex-direction: column;
+            font-size: 16px;
+            width: 10em;
+            overflow: hidden;
+            background-color: #F47425;
+            border-top-right-radius: 2.1em;
+        }
+
+        #name {
+            font-size: 1.3em;
+            font-family: "proxima-nova-condensed";
+            font-weight: 600;
+            text-transform: uppercase;
+            transform: translateY(0.08em);
+            transform-origin: left;
+        }
+
+        #head {
+            display: flex;
+            align-items: center;
+            background-color: #D3C9C9;
+            margin-bottom: 0.2em;
+            padding-left: 0.3em;
+            padding-right: 1.2em;
+        }
+
+        #portrait {
+            width: 100%;
+            border-bottom-right-radius: 5.5em;
+        }
+
+        #classIcon {
+            position: absolute;
+            bottom: 0.14em;
+            right: 0.16em;
+            width: 1.6em;
+            height: 1.6em;
+        }
+    </style>
+
+    <template>
+        <div id="head">
+            <div id="name"></div>
+        </div>
+        <video id="portrait" src="[[portraitUrl]]" autoplay loop muted></video>
+        <iron-image id="classIcon" sizing="contain" src="[[classIconUrl]]"></iron-image>
+    </template>
+</dom-module>
+
+<script>
+    // Wait until the page is fully loaded, because some of our handlers in here
+    // rely on GSAP being loaded.
+    document.addEventListener('DOMContentLoaded', function () {
+        Polymer({
+            is: 'toth-dotafortress-card',
+
+            properties: {
+                name: {
+                    type: String,
+                    value: 'Name',
+                    observer: 'nameChanged'
+                },
+                playerClass: {
+                    type: String,
+                    value: 'scout'
+                },
+                index: {
+                    type: Number,
+                    value: -1
+                },
+                classIconUrl: {
+                    type: String,
+                    computed: 'computeClassIconUrl(playerClass)'
+                },
+                portraitUrl: {
+                    type: String,
+                    computed: 'computePortraitUrl(playerClass, index, team)'
+                },
+                team: {
+                    type: String,
+                    value: ''
+                },
+                tl: {
+                    type: Object,
+                    value: new TimelineLite({autoRemoveChildren: true})
+                }
+            },
+
+            nameChanged: function(newVal) {
+                this.$.name.innerHTML = newVal;
+
+                var name = this.$.name;
+                var nameWidth = name.scrollWidth;
+                var maxWidth = this._getElementContentWidth(this.$.head);
+                if (nameWidth > maxWidth) {
+                    TweenLite.set(name, {scaleX: maxWidth / nameWidth});
+                } else {
+                    TweenLite.set(name, {scaleX: 1});
+                }
+            },
+
+            computeClassIconUrl: function(playerClass) {
+                return 'app/toth-dotafortress/class_icons/' + playerClass + '.png';
+            },
+
+            computePortraitUrl: function(playerClass, index, team) {
+                if (index === -1) {
+                    return 'app/toth-dotafortress/portraits/placeholder.webm';
+                } else {
+                    return 'app/toth-dotafortress/portraits/' + playerClass + '_' + index + '_' + team + '.webm';
+                }
+            },
+
+            /*
+             * Methods
+             */
+
+            _getElementContentWidth: function (element) {
+                var styles = window.getComputedStyle(element);
+                var padding = parseFloat(styles.paddingLeft) + parseFloat(styles.paddingRight);
+                return element.clientWidth - padding;
+            }
+        });
+    }, false);
+</script>
