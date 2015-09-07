@@ -8,6 +8,12 @@
 .toth3-overlay button[command="take"] {
   width: 100%;
 }
+.toth3-overlay .color-blu {
+  color: #127fdc;
+}
+.toth3-overlay .color-red {
+  color: #f53641;
+}
 .toth3-overlay .column {
   width: 100%;
   margin-right: 4px;
@@ -30,9 +36,16 @@
 .toth3-overlay.scoreboard .ncg-label {
   margin-top: 0;
 }
-.toth3-overlay.scoreboard .color-blu {
-  color: #127fdc;
+.toth3-overlay.dotafortress .draft {
+  display: flex;
 }
-.toth3-overlay.scoreboard .color-red {
-  color: #f53641;
+.toth3-overlay.dotafortress .draft > .input-group {
+  flex-grow: 1;
+}
+.toth3-overlay.dotafortress .ncg-label,
+.toth3-overlay.dotafortress h3 {
+  margin-top: 0;
+}
+.toth3-overlay.dotafortress select[multiple] {
+  height: 150px;
 }

@@ -13,6 +13,11 @@
             background-color: #F47425;
         }
 
+        :host[disabled] {
+            -webkit-filter: brightness(0.3);
+                    filter: brightness(0.3);
+        }
+
         #name {
             color: black;
             font-size: 1.8em;
@@ -65,7 +70,7 @@
             properties: {
                 name: {
                     type: String,
-                    value: 'Name',
+                    value: '',
                     observer: 'nameChanged'
                 },
                 playerClass: {
@@ -101,7 +106,7 @@
             },
 
             nameChanged: function(newVal) {
-                this.$.name.innerHTML = newVal;
+                this.$.name.innerHTML = newVal || '&nbsp;';
 
                 var name = this.$.name;
                 var nameWidth = name.scrollWidth;
@@ -127,7 +132,7 @@
             },
 
             computeClassIconUrl: function(playerClass) {
-                if (!playerClass) return;
+                if (!playerClass) return '';
                 return 'app/toth-dotafortress/class_icons/' + playerClass + '.png';
             },
 

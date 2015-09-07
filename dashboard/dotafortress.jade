@@ -1,0 +1,35 @@
+mixin draftSet(team)
+    - var baseTabIndex = (team === 'blu' ? 1 : 2)
+    .ncg-label(class="color-" + team)=team.toUpperCase()
+    select.draft-picker.form-control(data-set="draftable", data-team=team, data-index="0")
+    select.draft-picker.form-control(data-set="draftable", data-team=team, data-index="1")
+    select.draft-picker.form-control(data-set="draftable", data-team=team, data-index="2")
+    select.draft-picker.form-control(data-set="draftable", data-team=team, data-index="3")
+    select.draft-picker.form-control(data-set="draftable", data-team=team, data-index="4")
+    select.draft-picker.form-control(data-set="draftable", data-team=team, data-index="5")
+
+h3 Draft Players
+div(style="display: flex;")
+    .column
+        +draftSet("blu")
+    .column
+        +draftSet("red")
+
+hr
+
+h3 Ban Players
+div(style="display: flex;")
+    .column
+        .ncg-label AVAILABLE PLAYERS
+    .column
+        .ncg-label(style="margin-left: 16px;") BANNED PLAYERS
+div(style="display: flex;")
+    .column
+        select.form-control(multiple, data-set="available", data-id="ban_available")
+    div(style="display: flex; flex-direction: column; justify-content: center; margin-left: 4px; margin-right: 4px;")
+        button.btn.btn-xs.btn-primary(type="button" command="ban" style="margin-bottom: 8px;") >
+        button.btn.btn-xs.btn-primary(type="button" command="unban") <
+    .column
+        select.form-control(multiple, data-set="banned", data-id="ban_banned")
+
+

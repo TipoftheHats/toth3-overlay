@@ -16,6 +16,14 @@
         }
     }
 
+    .color-blu {
+        color: @team-blu;
+    }
+
+    .color-red {
+        color: @team-red;
+    }
+
     .column {
         width: 100%;
         margin-right: 4px;
@@ -49,13 +57,24 @@
         .ncg-label {
             margin-top: 0;
         }
+    }
 
-        .color-blu {
-            color: @team-blu;
+    &.dotafortress {
+        .draft {
+            display: flex;
+
+            > .input-group {
+                flex-grow: 1;
+            }
         }
 
-        .color-red {
-            color: @team-red;
+        .ncg-label,
+        h3 {
+            margin-top: 0;
+        }
+
+        select[multiple] {
+            height: 150px;
         }
     }
 }

@@ -12,7 +12,7 @@ module.exports = function(grunt) {
         },
         watch: {
             files: ['src/**/*.jade', 'src/**/*.less'],
-            tasks: ['jade', 'less']
+            tasks: ['less']
         }
     });
 

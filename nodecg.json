@@ -9,6 +9,6 @@
   "description": "The main broadcast assets for Tip of the Hats 2015.",
   "license": "MIT",
   "extension": {
-    "path": "extension.js"
+    "path": "extension/index.js"
   }
 }
