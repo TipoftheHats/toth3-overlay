@@ -49,3 +49,8 @@
 .toth3-overlay.dotafortress select[multiple] {
   height: 150px;
 }
+.toth3-overlay.dotafortress h3[title] {
+  display: inline-block;
+  border-bottom: 1px dashed black;
+  cursor: help;
+}

@@ -3,8 +3,6 @@
 
     var $panel = $bundle.filter('.dotafortress');
     var $drafters = $panel.find('.draft-picker');
-    var $ban = $panel.find('.btn[command="ban"]');
-    var $unban = $panel.find('.btn[command="unban"]');
 
     var players = nodecg.Replicant('df_players');
     players.on('change', function(oldVal, newVal) {
@@ -29,6 +27,11 @@
             return player.state === 'available';
         });
         $panel.find('[data-set="available"]').html(playersToOptGroups(available));
+
+        var picked = newVal.filter(function(player) {
+            return player.state === 'picked';
+        });
+        $panel.find('[data-set="picked"]').html(playersToOptGroups(picked));
     });
 
     var teams = nodecg.Replicant('df_teams');
@@ -78,29 +81,54 @@
         }
     });
 
-    $ban.click(function() {
-        var namesToBan = $panel.find('[data-id="ban_available"]').val();
-        namesToBan.forEach(function(name) {
-            players.value.some(function(player) {
-                if (player.name === name) {
-                    player.state = 'banned';
-                    return true;
-                }
-            });
-        });
+    // Ban button
+    $panel.find('.btn[command="ban"]').click(function() {
+        multiSelectHandler($panel.find('[data-id="ban_available"]'), 'banned');
     });
 
-    $unban.click(function() {
-        var namesToUnban = $panel.find('[data-id="ban_banned"]').val();
-        namesToUnban.forEach(function(name) {
+    // Unban button
+    $panel.find('.btn[command="unban"]').click(function() {
+        multiSelectHandler($panel.find('[data-id="ban_banned"]'), 'available');
+    });
+
+    // Pick button
+    $panel.find('.btn[command="pick"]').click(function() {
+        multiSelectHandler($panel.find('[data-id="pick_available"]'), 'picked');
+    });
+
+    // Unpick button
+    $panel.find('.btn[command="unpick"]').click(function() {
+        multiSelectHandler($panel.find('[data-id="pick_picked"]'), 'available');
+    });
+
+    // Lock-in Draft button
+    $panel.find('.btn[command="lock"]').click(function() {
+        // Un-ban all banned players and set all "drafted" players to "picked"
+        players.value.forEach(function(player) {
+            if (player.state === 'banned') {
+                player.state = 'available';
+            } else if (player.state === 'drafted') {
+                player.state = 'picked';
+            }
+        });
+
+        // Clear out the teams
+        teams.value.red = [];
+        teams.value.blu = [];
+    });
+
+    function multiSelectHandler($el, state) {
+        var namesToProcess = $el.val();
+        if (!namesToProcess) return;
+        namesToProcess.forEach(function(name) {
             players.value.some(function(player) {
                 if (player.name === name) {
-                    player.state = 'available';
+                    player.state = state;
                     return true;
                 }
             });
         });
-    });
+    }
 
     function playersToOptGroups(players) {
         var optGroups = [];
@@ -130,7 +158,6 @@
 
     function setDraftedPlayers() {
         if (!teams.value) return;
-        console.log('setting teams');
 
         teams.value.red.forEach(function(player, idx) {
             if (!player) return;
