@@ -3,8 +3,7 @@
 var app = require('express')();
 module.exports = function(nodecg) {
     app.post('/toth3-overlay/donation', function(req, res){
-        console.log(req.body);
-        nodecg.sendMessage('donation', req.body.content);
+        nodecg.sendMessage('donation', JSON.parse(req.body));
         res.end();
     });
 
