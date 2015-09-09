@@ -33,5 +33,12 @@
     "width": 3,
     "file": "dotafortress.jade",
     "faIcon": "fa-users"
+  },
+  {
+    "name": "total",
+    "title": "Total",
+    "width": 2,
+    "file": "total.jade",
+    "faIcon": "fa-dollar"
   }
 ]

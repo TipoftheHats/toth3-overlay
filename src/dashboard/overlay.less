@@ -16,6 +16,27 @@
         }
     }
 
+    .updateResult {
+        position: absolute;
+        left: 1px;
+        top: 100%;
+        transition: top 750ms ease;
+        z-index: 2;
+        pointer-events: none;
+        cursor: default;
+    }
+
+    .updateResult-show {
+        -webkit-animation: updateResult-show 4s;
+        -moz-animation:    updateResult-show 4s;
+        -o-animation:      updateResult-show 4s;
+        animation:         updateResult-show 4s;
+    }
+
+    .returnsResult {
+        overflow: hidden;
+    }
+
     .color-blu {
         color: @team-blu;
     }
@@ -59,6 +80,15 @@
         }
     }
 
+    &.total {
+        .totalDisplay {
+            font-weight: bold;
+            font-size: 200%;
+            text-align: center;
+            width: 100%;
+        }
+    }
+
     &.dotafortress {
         .draft {
             display: flex;
@@ -83,4 +113,29 @@
             cursor: help;
         }
     }
+}
+
+@-webkit-keyframes updateResult-show {
+    0%   { top: 100%; }
+    5%   { top: 0%; }
+    95%  { top: 0%; }
+    100% { top: 100%; }
+}
+@-moz-keyframes updateResult-show {
+    0%   { top: 100%; }
+    5%   { top: 0%; }
+    95%  { top: 0%; }
+    100% { top: 100%; }
+}
+@-o-keyframes updateResult-show {
+    0%   { top: 100%; }
+    5%   { top: 0%; }
+    95%  { top: 0%; }
+    100% { top: 100%; }
+}
+@keyframes updateResult-show {
+    0%   { top: 100%; }
+    5%   { top: 0%; }
+    95%  { top: 0%; }
+    100% { top: 100%; }
 }

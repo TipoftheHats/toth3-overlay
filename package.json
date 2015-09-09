@@ -1,7 +1,10 @@
 {
   "name": "toth3-overlay",
   "dependencies": {
-    "lastfm": "^0.9.2"
+    "lastfm": "^0.9.2",
+    "numeral": "^1.5.3",
+    "q": "^1.4.1",
+    "request": "^2.61.0"
   },
   "devDependencies": {
     "grunt": "^0.4.5",

@@ -5,6 +5,7 @@
     "autosize": "~3.0.6",
     "gsap": "~1.16.1",
     "iron-image": "PolymerElements/iron-image#~1.0.2",
-    "jquery": "~2.1.4"
+    "jquery": "~2.1.4",
+    "numeral": "~1.5.3"
   }
 }
