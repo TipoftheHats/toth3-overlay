@@ -126,7 +126,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
                 // Change tag
                 this.tl.call(function() {
-                    self.tag = data.amount;
+                    self.tag = numeral(data.amount).format('$0,0[.]00');
                 });
 
                 // Fade out #total
