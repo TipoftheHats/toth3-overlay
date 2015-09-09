@@ -123,6 +123,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
             nodecg.listenFor('donation', function (data) {
                 var self = this;
+                var truncatedName = _truncateString(data.donor__visiblename);
 
                 // Change tag
                 this.tl.call(function() {
@@ -143,13 +144,13 @@ document.addEventListener('DOMContentLoaded', function () {
                 });
 
                 // Figure out what width #name needs to ultimately be, and tween #name to it
-                this.$.yardstick.innerText = data.donor__visiblename;
+                this.$.yardstick.innerText = truncatedName;
                 var nameWidth = this.$.yardstick.offsetWidth;
                 this.tl.to(this.$.name, 0.8, {width: nameWidth, ease: Power3.easeInOut, autoRound: false});
 
                 // Set and fade in donor name
                 this.tl.call(function() {
-                    self.$.name.innerText = data.donor__visiblename;
+                    self.$.name.innerText = truncatedName;
                 });
                 this.tl.to(this.$.name, 0.4, {opacity: 1, ease: Power1.easeInOut});
 
@@ -228,6 +229,13 @@ document.addEventListener('DOMContentLoaded', function () {
             }, '0');
 
             return tl;
+        },
+
+        _truncateString: function(str) {
+            if (str.length > 24)
+                return str.substring(0,24)+'…';
+            else
+                return str;
         }
     });
 });
