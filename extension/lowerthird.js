@@ -5,7 +5,7 @@ module.exports = function(nodecg) {
     var lowerthirdPulsing = nodecg.Replicant('lowerthirdPulsing', { defaultValue: false, persistent: false });
     nodecg.Replicant('texts', { defaultValue: {}, persistent: false });
 
-    nodecg.listenFor('pulse', function pulse(duration) {
+    nodecg.listenFor('pulseLowerthird', function pulse(duration) {
         // Don't stack pulses
         if (lowerthirdPulsing.value) return;
 

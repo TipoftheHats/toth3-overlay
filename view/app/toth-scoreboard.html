@@ -187,15 +187,6 @@
          */
         var scoreboardNodes = document.getElementsByTagName('toth-scoreboard');
 
-        /*nodecg.Replicant('texts')
-                .on('change', function (oldVal, newVal) {
-                    var len = lowerthirdNodes.length;
-                    for (var i = 0; i < len; i++) {
-                        lowerthirdNodes.item(i).titleMsg = newVal.title;
-                        lowerthirdNodes.item(i).bodyMsg = newVal.body;
-                    }
-                });*/
-
         nodecg.Replicant('scores', {defaultValue: {
             red: {score: 0, tag: 'RED'},
             blu: {score: 0, tag: 'BLU'}

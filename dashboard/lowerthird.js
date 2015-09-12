@@ -59,7 +59,7 @@
     });
 
     $pulse.click(function () {
-        nodecg.sendMessage('pulse', $(this).data('duration'));
+        nodecg.sendMessage('pulseLowerthird', $(this).data('duration'));
     });
 
     /*

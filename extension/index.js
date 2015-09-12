@@ -35,4 +35,11 @@ module.exports = function(nodecg) {
         nodecg.log.error('Failed to load "dotafortress" lib:', e.stack);
         process.exit(1);
     }
+
+    try {
+        require('./twitter')(nodecg);
+    } catch (e) {
+        nodecg.log.error('Failed to load "twitter" lib:', e.stack);
+        process.exit(1);
+    }
 };

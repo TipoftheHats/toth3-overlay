@@ -1,0 +1,259 @@
+<link rel="import" href="../components/polymer/polymer.html">
+<link rel="import" href="../components/iron-image/iron-image.html">
+
+<dom-module id="toth-tweet">
+    <style>
+        :host {
+            display: flex;
+            flex-direction: column;
+            position: absolute;
+            bottom: 88px;
+            right: 88px;
+            width: 500px;
+            color: #E4E4E4;
+            font-size: 24px;
+        }
+
+        #tweetBody {
+            background-color: rgba(0,0,0,0.75);
+            padding: 10px 14px;
+            position: relative;
+            transform: translateY(-100%);
+        }
+
+        #image {
+            width: 100%;
+            height: 800px;
+            border-top-left-radius: 16px;
+            border-top-right-radius: 16px;
+            transform: translateY(100%);
+        }
+
+        #author {
+            display: flex;
+            align-items: center;
+        }
+
+        #author-details {
+            display: flex;
+            margin-left: 8px;
+            flex-direction: column;
+            font-size: 90%;
+        }
+
+        #name {
+            font-weight: 600;
+        }
+
+        #screen-name {
+            font-size: 80%;
+            color: #9daaa6;
+        }
+
+        #avatar {
+            width: 48px;
+            height: 48px;
+            border-radius: 4px;
+        }
+
+        #message {
+            margin-top: 12px;
+        }
+
+        #logo {
+            position: absolute;
+            width: 64px;
+            height: 64px;
+            right: 0;
+            top: -2px;
+        }
+
+        #line {
+            align-self: center;
+            height: 4px;
+            background-color: #F47425;
+            width: 0;
+            transform-origin: center;
+            z-index: 1;
+        }
+
+        .link {
+            color: #3FC1F1;
+        }
+
+        .link.orange {
+            color: #F47425;
+        }
+
+        s {
+            text-decoration: none;
+        }
+
+        .cull {
+            overflow: hidden;
+        }
+    </style>
+
+
+    <template>
+        <div class="cull" style="height: 800px;">
+            <iron-image id="image" sizing="contain" position="bottom" preload fade></iron-image>
+        </div>
+        <div id="line"></div>
+        <div class="cull">
+            <div id="tweetBody">
+                <iron-image id="logo" sizing="contain" preload fade src="../img/twitter.png"></iron-image>
+                <div id="author">
+                    <iron-image id="avatar" sizing="contain" preload fade src="[[avatarUrl]]"></iron-image>
+                    <div id="author-details">
+                        <div id="name">[[name]]</div>
+                        <div id="screen-name">[[screenName]]</div>
+                    </div>
+                </div>
+                <div id="message"></div>
+            </div>
+        </div>
+    </template>
+</dom-module>
+
+<script>
+// Wait until the page is fully loaded, because some of our handlers in here
+// rely on GSAP being loaded.
+document.addEventListener('DOMContentLoaded', function () {
+    Polymer({
+        is: 'toth-tweet',
+
+        properties: {
+            tl: {
+                type: Object,
+                value: new TimelineLite({autoRemoveChildren: true}),
+                readOnly: true
+            },
+            imagesTl: {
+                type: Object,
+                value: new TimelineMax(),
+                readOnly: true
+            },
+            images: {
+                type: Object,
+                value: function() { return []; },
+                observer: 'imagesChanged'
+            }
+        },
+
+        imagesChanged: function() {
+            var self = this;
+
+            this.imagesTl.clear();
+
+            if (this.images.length === 0) {
+                self.imagesTl.to(self.$.image, 0.5, {opacity: 0, ease: Power1.easeInOut});
+                self.imagesTl.call(function() {
+                    self.$.image.src = '';
+                }, null, null);
+                return;
+            }
+            else if (this.images.length === 1) {
+                this.imagesTl.repeat(0);
+            } else {
+                this.imagesTl.repeat(-1);
+            }
+
+            this.images.forEach(function(url, i) {
+                self.imagesTl.to(self.$.image, 0.5, {opacity: 0, ease: Power1.easeInOut}, '+=' + (i * 7));
+                self.imagesTl.call(function() {
+                    self.$.image.src = '';
+                    self.$.image.src = url;
+                }, null, null);
+                self.imagesTl.to(self.$.image, 0.5, {opacity: 1, ease: Power1.easeInOut});
+            });
+
+            this.imagesTl.to({}, 7, {});
+        },
+
+        /*
+         * Methods
+         */
+        show: function() {
+            this.tl.to(this.$.line, 0.8, {width: '100%', ease: Power3.easeInOut});
+            this.tl.to(this.$.tweetBody, 0.5, {y: '0%', ease: Power3.easeOut});
+            this.tl.to(this.$.image, 1, {y: '0%', ease: Power3.easeOut}, '-=0.5');
+        },
+
+        hide: function() {
+            this.tl.to(this.$.image, 1, {y: '100%', ease: Power3.easeInt});
+            this.tl.to(this.$.tweetBody, 0.5, {y: '-100%', ease: Power3.easeInt}, '-=0.88');
+            this.tl.to(this.$.line, 0.8, {width: '0%', ease: Power3.easeInOut});
+        },
+
+        /*
+         * Lifecycle
+         */
+
+        ready: function() {
+            var self = this;
+
+            nodecg.Replicant('tweet').on('change', function(oldVal, newVal) {
+                if (!newVal || !newVal.user) return;
+
+                self.avatarUrl = newVal.user.profile_image_url;
+                self.name = newVal.user.name;
+                self.screenName = '@' + newVal.user.screen_name;
+
+                var msg = newVal.text;
+                newVal.entities.user_mentions.forEach(function(mention) {
+                    msg = msg.split('@' + mention.screen_name).join(
+                        '<span class="link">' +
+                            '<s>@</s>' +
+                             mention.screen_name +
+                        '</span>'
+                    );
+                });
+
+                newVal.entities.urls.forEach(function(url) {
+                    msg = msg.split(url.url).join(
+                        '<span class="link">' + url.display_url + '</span>'
+                    );
+                });
+
+                newVal.entities.hashtags.forEach(function(hashtag) {
+                    if (hashtag.text.toLowerCase() === 'toth2015') {
+                        msg = msg.split('#' + hashtag.text).join(
+                            '<span class="link orange">' + '#' + hashtag.text + '</span>'
+                        );
+                    } else {
+                        msg = msg.split('#' + hashtag.text).join(
+                            '<span class="link">' + '#' + hashtag.text + '</span>'
+                        );
+                    }
+                });
+
+                var images = [];
+                if (newVal.extended_entities) {
+                    newVal.extended_entities.media.forEach(function(medium) {
+                        if (medium.type === 'photo') {
+                            images.push(medium.media_url + ':large');
+                            msg = msg.split(medium.url).join('');
+                        } else {
+                            msg = msg.split(medium.media_url).join(
+                                    '<span class="link">' + medium.display_url + '</span>'
+                            );
+                        }
+                    });
+                }
+                self.images = images;
+
+                Polymer.dom(self.$.message).innerHTML = msg.trim();
+            });
+
+            nodecg.Replicant('tweetShowing').on('change', function (oldVal, newVal) {
+                if (newVal) {
+                    self.show();
+                } else {
+                    self.hide();
+                }
+            });
+        }
+    });
+}, false);
+</script>
