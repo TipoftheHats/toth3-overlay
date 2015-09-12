@@ -73,6 +73,8 @@
              * Methods
              */
             show: function() {
+                var self = this;
+
                 // Clear any existing tweens
                 this.tl.clear();
 
@@ -93,8 +95,11 @@
                     this.tl.to(this.$.nextLogo, this.fadeTime, {opacity: 1, ease: Power1.easeInOut});
 
                     // Move #nextLogo's image into #currentLogo, and reset everything else.
-                    this.tl.set(this.$.currentLogo, {opacity: 1, backgroundImage: this.logoUrls[i]});
-                    this.tl.set(this.$.nextLogo, {opacity: 0, backgroundImage: ''});
+                    this.tl.call(function(idx) {
+                        self.$.currentLogo.style.backgroundImage = self.logoUrls[idx];
+                        self.$.currentLogo.style.opacity = 1;
+                        self.$.nextLogo.style.opacity  = 0;
+                    }, [i]);
                 }
 
                 // Hide the last logo
