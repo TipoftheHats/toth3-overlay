@@ -13,13 +13,13 @@ var twitter = new Twitter({
 module.exports = function(nodecg) {
     var tweetShowing = nodecg.Replicant('tweetShowing', { defaultValue: false, persistent: false });
     var tweetPulsing = nodecg.Replicant('tweetPulsing', { defaultValue: false, persistent: false });
-    var tweet = nodecg.Replicant('tweet', { defaultValue: {}, persistent: false });
+    var tweet = nodecg.Replicant('tweet', { defaultValue: {} });
 
     nodecg.listenFor('getTweet', function(url) {
         var id = url.split('/').pop();
         twitter.get('statuses/show', {id: id, include_my_retweet: false}, function(error, tw){
             if (error) {
-                nodecg.log.error(error);
+                nodecg.log.error('Couldn\'t get tweet:', error[0].message);
                 return;
             }
 
