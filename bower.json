@@ -1,7 +1,6 @@
 {
   "name": "toth3-overlay",
   "dependencies": {
-    "Snap.svg": "~0.4.1",
     "autosize": "~3.0.6",
     "gsap": "~1.16.1",
     "iron-image": "PolymerElements/iron-image#~1.0.2",
