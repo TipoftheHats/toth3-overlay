@@ -1,5 +1,12 @@
 [
   {
+    "name": "main",
+    "title": "Master Fade",
+    "width": 2,
+    "file": "main.jade",
+    "faIcon": "fa-globe"
+  },
+  {
     "name": "lowerthird",
     "title": "Lowerthird",
     "width": 4,
