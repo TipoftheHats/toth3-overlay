@@ -54,5 +54,12 @@
     "width": 4,
     "file": "twitter.jade",
     "faIcon": "fa-twitter"
+  },
+  {
+    "name": "brb",
+    "title": "BRB",
+    "width": 2,
+    "file": "brb.jade",
+    "faIcon": "fa-clock-o"
   }
 ]
