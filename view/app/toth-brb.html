@@ -9,6 +9,7 @@
             justify-content: space-around;
             align-items: center;
             color: #E4E4E4;
+            opacity: 0;
         }
 
         h1 {
@@ -88,6 +89,10 @@ document.addEventListener('DOMContentLoaded', function () {
 
         ready: function() {
             var self = this;
+
+            nodecg.Replicant('brbShowing').on('change', function(oldVal, newVal) {
+                TweenLite.to(self, 0.5, {opacity: newVal ? 1 : 0, ease: Power1.easeInOut});
+            });
 
             nodecg.Replicant('upNext').on('change', function(oldVal, newVal) {
                 TweenLite.to(self.$.upNext, 0.5, {
