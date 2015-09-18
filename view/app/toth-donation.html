@@ -8,6 +8,7 @@
             height: 45px;
             font-size: 32px;
             align-items: center;
+			white-space: nowrap;
         }
 
         #body {
@@ -37,11 +38,13 @@
 
         #name {
             display: none;
+			white-space: nowrap;
         }
 
         #yardstick {
             position: absolute;
             opacity: 0;
+			white-space: nowrap;
         }
     </style>
 
@@ -122,8 +125,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 });
 
             nodecg.listenFor('donation', function (data) {
-                var self = this;
-                var truncatedName = _truncateString(data.donor__visiblename);
+                var truncatedName = self._truncateString(data.donor__visiblename);
 
                 // Change tag
                 this.tl.call(function() {
@@ -232,8 +234,8 @@ document.addEventListener('DOMContentLoaded', function () {
         },
 
         _truncateString: function(str) {
-            if (str.length > 24)
-                return str.substring(0,24)+'…';
+            if (str.length > 28)
+                return str.substring(0,28)+'...';
             else
                 return str;
         }
