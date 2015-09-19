@@ -120,6 +120,12 @@
 // Wait until the page is fully loaded, because some of our handlers in here
 // rely on GSAP being loaded.
 document.addEventListener('DOMContentLoaded', function () {
+
+    createjs.Sound.registerSound('snd/tweet_in.ogg', 'tweet_in');
+    createjs.Sound.registerSound('snd/tweet_out.ogg', 'tweet_out');
+    createjs.Sound.registerSound('snd/image_in.ogg', 'image_in');
+    createjs.Sound.registerSound('snd/image_out.ogg', 'image_out');
+    
     Polymer({
         is: 'toth-tweet',
 
@@ -138,6 +144,10 @@ document.addEventListener('DOMContentLoaded', function () {
                 type: Object,
                 value: function() { return []; },
                 observer: 'imagesChanged'
+            },
+            _initialized: {
+                type: Boolean,
+                value: false
             }
         },
 
@@ -175,12 +185,33 @@ document.addEventListener('DOMContentLoaded', function () {
          * Methods
          */
         show: function() {
+            var self = this;
+            createjs.Sound.play('tweet_in').pan = 0.000001;
+
             this.tl.to(this.$.line, 0.8, {width: '100%', ease: Power3.easeInOut});
-            this.tl.to(this.$.tweetBody, 0.5, {y: '0%', ease: Power3.easeOut});
+            this.tl.to(this.$.tweetBody, 0.5, {
+                onStart: function() {
+                    if (self.images.length > 0) {
+                        var imageIn = createjs.Sound.play('image_in');
+                        imageIn.pan = 0.000001;
+                        imageIn.volume = 0.75;
+                    }
+                },
+                y: '0%',
+                ease: Power3.easeOut
+            });
             this.tl.to(this.$.image, 1, {y: '0%', ease: Power3.easeOut}, '-=0.5');
         },
 
         hide: function() {
+            createjs.Sound.play('tweet_out').pan = 0.000001;
+
+            if (this.images.length > 0) {
+                var imageOut = createjs.Sound.play('image_out');
+                imageOut.pan = 0.000001;
+                imageOut.volume = 0.75;
+            }
+
             this.tl.to(this.$.image, 1, {y: '100%', ease: Power3.easeInt});
             this.tl.to(this.$.tweetBody, 0.5, {y: '-100%', ease: Power3.easeInt}, '-=0.88');
             this.tl.to(this.$.line, 0.8, {width: '0%', ease: Power3.easeInOut});
@@ -246,7 +277,13 @@ document.addEventListener('DOMContentLoaded', function () {
                 Polymer.dom(self.$.message).innerHTML = msg.trim();
             });
 
+            var initialized = false;
             nodecg.Replicant('tweetShowing').on('change', function (oldVal, newVal) {
+                if (!initialized) {
+                    initialized = true;
+                    if (newVal === false) return;
+                }
+
                 if (newVal) {
                     self.show();
                 } else {

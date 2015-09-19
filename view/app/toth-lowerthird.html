@@ -80,155 +80,169 @@
 </dom-module>
 
 <script>
-    // Wait until the page is fully loaded, because some of our handlers in here
-    // rely on GSAP being loaded.
-    document.addEventListener('DOMContentLoaded', function () {
-        Polymer({
-            is: 'toth-lowerthird',
+// Wait until the page is fully loaded, because some of our handlers in here
+// rely on GSAP being loaded.
+document.addEventListener('DOMContentLoaded', function () {
 
-            /*
-             * Properties
-             */
-            properties: {
-                titleMsg: {
-                    type: String,
-                    observer: 'titleMsgChanged'
-                },
-                bodyMsg: {
-                    type: String,
-                    observer: 'bodyMsgChanged'
-                },
-                absoluteMaxWidth: {
-                    type: Number,
-                    value: 1240
-                }
-            },
+    createjs.Sound.registerSound('snd/lowerthird_in.ogg', 'lowerthird_in');
+    createjs.Sound.registerSound('snd/lowerthird_out.ogg', 'lowerthird_out');
 
-            /*
-             * Observers
-             */
-            titleMsgChanged: function () {
-                // Limit width of title to 800 px
-                var title = this.$.title;
-                var maxWidth = 800;
-                var titleWidth = title.scrollWidth;
-                if (titleWidth > maxWidth) {
-                    TweenLite.set(title, {scaleX: maxWidth / titleWidth});
-                } else {
-                    TweenLite.set(title, {scaleX: 1});
-                }
-            },
-            bodyMsgChanged: function (newValue) {
-                var bodyEl = this.$.body;
-                bodyEl.style.maxWidth = '';
-                var width = bodyEl.offsetWidth;
-                if (width >= this.absoluteMaxWidth) {
-                    var maxHeight = parseInt(window.getComputedStyle(bodyEl).maxHeight);
-                    bodyEl.style.maxWidth = width / 2 + 'px';
-                    while (bodyEl.scrollHeight > maxHeight) {
-                        bodyEl.style.maxWidth = (parseInt(bodyEl.style.maxWidth) + 1) + 'px';
-                        if (parseInt(bodyEl.style.maxWidth) >= this.absoluteMaxWidth) break;
-                    }
-                    if (parseInt(bodyEl.style.maxWidth) >= this.absoluteMaxWidth) {
-                        bodyEl.style.maxWidth = this.absoluteMaxWidth + 'px';
-                    }
-                }
-
-                if (bodyEl.showing) {
-                    TweenLite.set(this.$.line, {
-                        width: Math.max(this.$.title.getBoundingClientRect().width + this.$.logo.offsetWidth,
-                                bodyEl.offsetWidth)
-                    });
-                }
-            },
-
-            /*
-             * Methods
-             */
-            show: function () {
-                var line = this.$.line;
-                var logo = this.$.logo;
-                var title = this.$.title;
-                var body = this.$.body;
-                var self = this;
-
-                TweenLite.to(line, 0.8, {
-                    width: Math.max(title.getBoundingClientRect().width + logo.offsetWidth, body.offsetWidth),
-                    ease: Power3.easeInOut,
-                    onUpdate: function () {
-                        var currLineWidth = line.offsetWidth;
-
-                        if (!logo.showing && currLineWidth >= logo.offsetWidth) {
-                            logo.showing = true;
-                            TweenLite.to(logo, 0.5, {y: '0%', ease: Power3.easeOut})
-                        }
-
-                        if (!title.showing && currLineWidth >= title.getBoundingClientRect().width) {
-                            title.showing = true;
-                            TweenLite.to(title, 0.5, {y: '0%', ease: Power3.easeOut})
-                        }
-
-                        if (!body.showing && currLineWidth >= body.offsetWidth) {
-                            body.showing = true;
-                            TweenLite.to(body, 0.5, {y: '0%', ease: Power3.easeOut})
-                        }
-                    },
-                    onComplete: function() {
-                        self.lineTween = null;
-                        self.showing = true;
-                    }
-                });
-            },
-            hide: function () {
-                var line = this.$.line;
-                var logo = this.$.logo;
-                var title = this.$.title;
-                var body = this.$.body;
-                var self = this;
-                var tl = new TimelineLite();
-
-                tl.add('start');
-                tl.to(logo, 0.5, {y: '100%', ease: Power3.easeIn}, 'start');
-                tl.to(title, 0.5, {y: '100%', ease: Power3.easeIn}, 'start+=0.08');
-                tl.to(body, 0.5, {y: '-100%', ease: Power3.easeIn}, 'start+=0.16');
-                tl.to(line, 0.06, {scaleY: '0', ease: Linear.easeNone});
-                tl.set(body, {clearProps: 'transform'});
-                tl.set([logo, line], {
-                    clearProps: 'all',
-                    onComplete: function () {
-                        body.showing = false;
-                        title.showing = false;
-                        logo.showing = false;
-                        self.showing = false;
-                    }
-                });
-            }
-        });
+    Polymer({
+        is: 'toth-lowerthird',
 
         /*
-         * NodeCG bindings
+         * Properties
          */
-        var lowerthirdNodes = document.getElementsByTagName('toth-lowerthird');
+        properties: {
+            titleMsg: {
+                type: String,
+                observer: 'titleMsgChanged'
+            },
+            bodyMsg: {
+                type: String,
+                observer: 'bodyMsgChanged'
+            },
+            absoluteMaxWidth: {
+                type: Number,
+                value: 1240
+            }
+        },
 
-        nodecg.Replicant('texts')
-                .on('change', function (oldVal, newVal) {
-                    var len = lowerthirdNodes.length;
-                    for (var i = 0; i < len; i++) {
-                        lowerthirdNodes.item(i).titleMsg = newVal.title;
-                        lowerthirdNodes.item(i).bodyMsg = newVal.body;
-                    }
-                });
+        /*
+         * Observers
+         */
+        titleMsgChanged: function () {
+            // Limit width of title to 800 px
+            var title = this.$.title;
+            var maxWidth = 800;
+            var titleWidth = title.scrollWidth;
+            if (titleWidth > maxWidth) {
+                TweenLite.set(title, {scaleX: maxWidth / titleWidth});
+            } else {
+                TweenLite.set(title, {scaleX: 1});
+            }
+        },
+        bodyMsgChanged: function (newValue) {
+            var bodyEl = this.$.body;
+            bodyEl.style.maxWidth = '';
+            var width = bodyEl.offsetWidth;
+            if (width >= this.absoluteMaxWidth) {
+                var maxHeight = parseInt(window.getComputedStyle(bodyEl).maxHeight);
+                bodyEl.style.maxWidth = width / 2 + 'px';
+                while (bodyEl.scrollHeight > maxHeight) {
+                    bodyEl.style.maxWidth = (parseInt(bodyEl.style.maxWidth) + 1) + 'px';
+                    if (parseInt(bodyEl.style.maxWidth) >= this.absoluteMaxWidth) break;
+                }
+                if (parseInt(bodyEl.style.maxWidth) >= this.absoluteMaxWidth) {
+                    bodyEl.style.maxWidth = this.absoluteMaxWidth + 'px';
+                }
+            }
 
-        nodecg.Replicant('lowerthirdShowing')
-                .on('change', function (oldVal, newVal) {
-                    var len = lowerthirdNodes.length;
-                    for (var i = 0; i < len; i++) {
-                        if (newVal) {
-                            lowerthirdNodes.item(i).show();
-                        } else {
-                            lowerthirdNodes.item(i).hide();
-                        }
-                    }
+            if (bodyEl.showing) {
+                TweenLite.set(this.$.line, {
+                    width: Math.max(this.$.title.getBoundingClientRect().width + this.$.logo.offsetWidth,
+                            bodyEl.offsetWidth)
                 });
-    }, false);
+            }
+        },
+
+        /*
+         * Methods
+         */
+        show: function () {
+            var line = this.$.line;
+            var logo = this.$.logo;
+            var title = this.$.title;
+            var body = this.$.body;
+            var self = this;
+
+            createjs.Sound.play('lowerthird_in').pan = 0.000001;
+
+            TweenLite.to(line, 0.8, {
+                width: Math.max(title.getBoundingClientRect().width + logo.offsetWidth, body.offsetWidth),
+                ease: Power3.easeInOut,
+                onUpdate: function () {
+                    var currLineWidth = line.offsetWidth;
+
+                    if (!logo.showing && currLineWidth >= logo.offsetWidth) {
+                        logo.showing = true;
+                        TweenLite.to(logo, 0.5, {y: '0%', ease: Power3.easeOut})
+                    }
+
+                    if (!title.showing && currLineWidth >= title.getBoundingClientRect().width) {
+                        title.showing = true;
+                        TweenLite.to(title, 0.5, {y: '0%', ease: Power3.easeOut})
+                    }
+
+                    if (!body.showing && currLineWidth >= body.offsetWidth) {
+                        body.showing = true;
+                        TweenLite.to(body, 0.5, {y: '0%', ease: Power3.easeOut})
+                    }
+                },
+                onComplete: function() {
+                    self.lineTween = null;
+                    self.showing = true;
+                }
+            });
+        },
+        hide: function () {
+            var line = this.$.line;
+            var logo = this.$.logo;
+            var title = this.$.title;
+            var body = this.$.body;
+            var self = this;
+            var tl = new TimelineLite();
+
+            createjs.Sound.play('lowerthird_out').pan = 0.000001;
+
+            tl.add('start');
+            tl.to(logo, 0.5, {y: '100%', ease: Power3.easeIn}, 'start');
+            tl.to(title, 0.5, {y: '100%', ease: Power3.easeIn}, 'start+=0.08');
+            tl.to(body, 0.5, {y: '-100%', ease: Power3.easeIn}, 'start+=0.16');
+            tl.to(line, 0.06, {scaleY: '0', ease: Linear.easeNone});
+            tl.set(body, {clearProps: 'transform'});
+            tl.set([logo, line], {
+                clearProps: 'all',
+                onComplete: function () {
+                    body.showing = false;
+                    title.showing = false;
+                    logo.showing = false;
+                    self.showing = false;
+                }
+            });
+        }
+    });
+
+    /*
+     * NodeCG bindings
+     */
+    var lowerthirdNodes = document.getElementsByTagName('toth-lowerthird');
+
+    nodecg.Replicant('texts')
+            .on('change', function (oldVal, newVal) {
+                var len = lowerthirdNodes.length;
+                for (var i = 0; i < len; i++) {
+                    lowerthirdNodes.item(i).titleMsg = newVal.title;
+                    lowerthirdNodes.item(i).bodyMsg = newVal.body;
+                }
+            });
+
+    var initialized = false;
+    nodecg.Replicant('lowerthirdShowing')
+            .on('change', function (oldVal, newVal) {
+                if (!initialized) {
+                    initialized = true;
+                    if (newVal === false) return;
+                }
+
+                var len = lowerthirdNodes.length;
+                for (var i = 0; i < len; i++) {
+                    if (newVal) {
+                        lowerthirdNodes.item(i).show();
+                    } else {
+                        lowerthirdNodes.item(i).hide();
+                    }
+                }
+            });
+}, false);
 </script>
