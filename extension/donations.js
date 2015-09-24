@@ -1,11 +1,13 @@
 'use strict';
 
-// TODO: Make this pull from the config, and not be hardcoded
-var SECRET_KEY = 'VjAJRS95)57I8DL';
 var app = require('express')();
 module.exports = function(nodecg) {
+    if (!nodecg.bundleConfig || !nodecg.bundleConfig.donationKey) {
+        throw new Error('cfg/toth3-overlay.json is missing the "donationKey" property');
+    }
+
     app.post('/toth3-overlay/donation', function(req, res){
-        if (req.query.key !== SECRET_KEY) {
+        if (req.query.key !== nodecg.bundleConfig.donationKey) {
             res.status(403).send('Not Authorized');
             return;
         }
