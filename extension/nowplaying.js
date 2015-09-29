@@ -5,8 +5,8 @@ var LastFmNode = require('lastfm').LastFmNode;
 
 /* jshint -W106 */
 var lastfm = new LastFmNode({
-    api_key: 'bc3eb133af55bcae4309db3d7b86477a',
-    secret: '8c9e221f3a4fed47cf02512ca3593b81'
+    api_key: '',
+    secret: ''
 });
 /* jshint +W106 */
 
