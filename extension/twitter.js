@@ -1,12 +1,13 @@
 /* jshint -W106 */
 'use strict';
 
+// Put your Twitter API credentials here
 var Twitter = require('twitter');
 var twitter = new Twitter({
-    consumer_key: '8WYQdXpVZj5GP2qnZHT2iBYcJ',
-    consumer_secret: 'SzKOjhhqxWcHVOynivhL4e1tSKoEsFSGg5U5KvFqlMIPX2XBAj',
-    access_token_key: '23874413-FmACpeLyncxibzSrpNQdjyNFMe1APpMPU9pvmlTFq',
-    access_token_secret: '1tJgGp7u9M7ppw8sgiN97wRSUrq5w0JhQqoteYoz9CagN'
+    consumer_key: '',
+    consumer_secret: '',
+    access_token_key: '',
+    access_token_secret: ''
 });
 
 
