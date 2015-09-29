@@ -4,6 +4,7 @@
 var LastFmNode = require('lastfm').LastFmNode;
 
 /* jshint -W106 */
+// Put your Last.fm api key and secret here
 var lastfm = new LastFmNode({
     api_key: '',
     secret: ''
