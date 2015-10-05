@@ -51,7 +51,7 @@
             transform: translateX(-100%);
         }
 
-        #title {
+        #song {
             font-size: 32px;
             line-height: 34px;
             transform-origin: left;
@@ -77,7 +77,7 @@
         <div class="cull">
             <div id="details" class="background fullHeight">
                 <div>
-                    <div id="title"></div>
+                    <div id="song"></div>
                     <div id="artist">[[artist]]</div>
                 </div>
             </div>
@@ -96,14 +96,14 @@
                 artUrl: {
                     type: String
                 },
-                title: {
+                song: {
                     type: String,
-                    value: 'Default g Title',
-                    observer: 'titleChanged'
+                    value: '',
+                    observer: 'songChanged'
                 },
                 artist: {
                     type: String,
-                    value: 'Default g Artist',
+                    value: '',
                     observer: 'artistChanged'
                 },
                 duration: {
@@ -121,16 +121,16 @@
                 }
             },
 
-            titleChanged: function(newVal) {
-                this.$.title.innerHTML = '&#9834; ' + newVal;
+            songChanged: function(newVal) {
+                this.$.song.innerHTML = '&#9834; ' + newVal;
 
-                var title = this.$.title;
-                var titleWidth = title.scrollWidth;
+                var song = this.$.song;
+                var songWidth = song.scrollWidth;
                 var maxWidth = this._getElementContentWidth(this.$.details);
-                if (titleWidth > maxWidth) {
-                    TweenLite.set(title, {scaleX: maxWidth / titleWidth});
+                if (songWidth > maxWidth) {
+                    TweenLite.set(song, {scaleX: maxWidth / songWidth});
                 } else {
-                    TweenLite.set(title, {scaleX: 1});
+                    TweenLite.set(song, {scaleX: 1});
                 }
             },
 
@@ -167,17 +167,19 @@
              * Methods
              */
 
-            show: function(artist, title, cover) {
+            show: function(artist, song, cover) {
                 if (this.showing) return;
                 this._setShowing(true);
 
                 var self = this;
 
+                console.log('nowplaying', artist, song, cover);
+
                 // Prevent first "call" from getting ignored
                 this.tl.to({}, 0.01, {});
 
                 this.tl.call(function() {
-                    self.title = title;
+                    self.song = song;
                     self.artist = artist;
                     self.artUrl = cover
                 });
