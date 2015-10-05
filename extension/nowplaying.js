@@ -3,17 +3,41 @@
 
 var LastFmNode = require('lastfm').LastFmNode;
 
-/* jshint -W106 */
-// Put your Last.fm api key and secret here
-var lastfm = new LastFmNode({
-    api_key: '',
-    secret: ''
-});
-/* jshint +W106 */
-
-var trackStream  = lastfm.stream('dashner123');
-
 module.exports = function(nodecg) {
+    if (!nodecg.bundleConfig) {
+        nodecg.log.error('cfg/toth3-overlay.json was not found. ' +
+            'This file is where the Last.fm API key and secret are set. ' +
+            'Without those, the "now playing" graphic cannot function.');
+        return;
+    } else if (typeof nodecg.bundleConfig.lastfm === 'undefined') {
+            nodecg.log.error('"lastfm" is not defined in cfg/toth3-overlay.json! ' +
+                'This object contains other properties that are required for the "now playing" graphic to function.');
+            return;
+    } else if (typeof nodecg.bundleConfig.lastfm.apiKey === 'undefined') {
+        nodecg.log.error('lastfm.apiKey is not defined in cfg/toth3-overlay.json! ' +
+            'This key (obtained from your Last.fm developer account) ' +
+            ' is required for the "now playing" graphic to function.');
+        return;
+    } else if (typeof nodecg.bundleConfig.lastfm.secret === 'undefined') {
+        nodecg.log.error('lastfm.secret is not defined in cfg/toth3-overlay.json! ' +
+            'This secret (obtained from your Last.fm developer account) ' +
+            'is required for the "now playing" graphic to function.');
+        return;
+    } else if (typeof nodecg.bundleConfig.lastfm.targetAccount === 'undefined') {
+        nodecg.log.error('lastfm.targetAccount is not defined in cfg/toth3-overlay.json! ' +
+            'This is the Last.fm username that you wish to pull "now playing" song data from.');
+        return;
+    }
+
+    /* jshint -W106 */
+    var lastfm = new LastFmNode({
+        api_key: nodecg.bundleConfig.lastfm.apiKey,
+        secret: nodecg.bundleConfig.lastfm.secret
+    });
+    var trackStream  = lastfm.stream(nodecg.bundleConfig.lastfm.targetAccount);
+    /* jshint +W106 */
+
+
     var pulseTimeout;
     var pulsing = nodecg.Replicant('pulsing', {defaultValue: false, persistent: false});
     var nowPlaying = nodecg.Replicant('nowPlaying', {defaultValue: {}, persistent: false});
@@ -49,7 +73,7 @@ module.exports = function(nodecg) {
         pulse();
     });
 
-    trackStream.on('error', function(error) {
+    trackStream.on('error', function() {
         // Just ignore it, this lib generates tons of errors.
         //nodecg.log.error(error.message);
     });

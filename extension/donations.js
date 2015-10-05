@@ -3,7 +3,11 @@
 var app = require('express')();
 module.exports = function(nodecg) {
     if (!nodecg.bundleConfig || !nodecg.bundleConfig.donationKey) {
-        throw new Error('cfg/toth3-overlay.json is missing the "donationKey" property');
+        nodecg.log.error('cfg/toth3-overlay.json is missing the "donationKey" property. ' +
+            'This means that we cannot receive new incoming donations, ' +
+            'and that they will not be displayed in the top left corner as a result. ' +
+            'The total will still be displayed.');
+        return;
     }
 
     app.post('/toth3-overlay/donation', function(req, res){
