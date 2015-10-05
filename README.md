@@ -25,7 +25,7 @@ If you don't have Twitter or Last.fm API credentials, you must make them before 
         "accessTokenSecret": "yourAccessTokenSecret"
     },
     "lastfm": {
-        "targetAccount": "langeh",
+        "targetAccount": "yourLastfmAccount",
         "apiKey": "yourApiKey",
         "secret": "yourSecret"
     }
